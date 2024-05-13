@@ -9,7 +9,8 @@ import adminManageUsers from '../pages/admin/admin_edit.vue'
 import adminPostings from '../pages/admin/admin_posts.vue'
 import tutorcenter_dashboard from '../pages/tutor_center/tc_dash.vue'
 import tutorcenter_mytutors from '../pages/tutor_center/tc_tutors.vue'
-
+import tutorcenter_reviews from '../pages/tutor_center/tc_reviews.vue'
+import tutorcenter_myaccount from '../pages/tutor_center/tc_myaccount.vue'
 
 import {createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase';
@@ -63,9 +64,21 @@ const routes = [
         //require auth as normal user here
     },
     {
-        path: '/my-tutors',
+        path: '/mytutors',
         name: 'tutorcenter_mytutors',
         component: tutorcenter_mytutors,
+        //require auth as normal user here
+    },
+    {
+        path: '/reviews',
+        name: 'tutorcenter_reviews',
+        component: tutorcenter_reviews,
+        //require auth as normal user here
+    },
+    {
+        path: '/myaccount',
+        name: 'tutorcenter_myaccount',
+        component: tutorcenter_myaccount,
         //require auth as normal user here
     },
     {

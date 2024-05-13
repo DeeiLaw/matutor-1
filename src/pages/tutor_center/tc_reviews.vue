@@ -47,19 +47,19 @@
         <div class="col-lg-2">
         <!--side nav-->
         <aside>
-          <p> {TC Account name} </p>
-          <button id="current" type="button" disabled>
+          <p> {TC Account Name} </p>
+          <router-link to="/dashboard" class="activeBtn">
             <i class="bi bi-speedometer"></i>
             Dashboard
-          </button>
+          </router-link>
           <router-link to="/mytutors" class="activeBtn">
             <i class="bi bi-clipboard-check-fill"></i>
             My Tutors
           </router-link>
-          <router-link to="/reviews" class="activeBtn">
+          <button id="current" type="button" disabled>
             <i class="bi bi-telephone-plus-fill"></i>
             Reviews
-          </router-link>
+          </button>
           <router-link to="/myaccount" class="activeBtn">
             <i class="bi bi-telephone-plus-fill"></i>
             My Account
@@ -74,57 +74,7 @@
       </div>
       
       <div class="col-lg-10 pt-5">
-        <h4>Tutor Center Dashboard</h4>
-
-        <h5>Your Tutors' Recent Reviews(Max 10)</h5>
-        <table class="table table-responsive bg-light">
-          <thead>
-            <tr>
-              <th>Rating</th>
-              <th>Tutor Name</th>
-              <th>Reviewed by</th>
-              <th>Review description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="rating">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-half"></i>
-                  <i class="bi bi-star"></i>
-              </td>
-              <td>Tutor's Name</td>
-              <td>Learner's Name</td>
-              <td>
-                  Lorem Ipsum Dolor sit amet. The Quick brown fox jumps over the lazy dog
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <h5>Your Tutors (Max 10 Sort by rating)</h5>
-        <table class="table table-responsive bg-light">
-          <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Age</th>
-            <th>Contact #</th>
-            <th>Rating</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr v-for="learner of tutorList">
-              <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
-              <td>{{ learner.userEmail }}</td>
-              <td>{{ learner.userAge }}</td>
-              <td>{{ learner.userContact }}</td>
-              <td>{{ learner.userRating }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <h4>Reviews</h4>
       </div>
       </div>
     </div>
@@ -303,8 +253,5 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   }
   aside .logoutBtn:hover:before {
     box-shadow: 0 -20px 0 0 #ff3045   !important;
-  }
-  td i{
-    color: #f3cf00;
   }
 </style>

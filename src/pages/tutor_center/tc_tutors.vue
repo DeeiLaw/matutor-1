@@ -47,7 +47,7 @@
         <div class="col-lg-2">
         <!--side nav-->
         <aside>
-          <p> {TC Account} </p>
+          <p> {TC Account Name} </p>
           <router-link to="/dashboard" class="activeBtn">
             <i class="bi bi-speedometer"></i>
             Dashboard
@@ -56,13 +56,18 @@
             <i class="bi bi-clipboard-check-fill"></i>
             My Tutors
           </button>
-          <router-link to="/login" class="activeBtn">
+          <router-link to="/reviews" class="activeBtn">
             <i class="bi bi-telephone-plus-fill"></i>
             Reviews
           </router-link>
-          <router-link to="/login" class="activeBtn">
+          <router-link to="/myaccount" class="activeBtn">
             <i class="bi bi-telephone-plus-fill"></i>
             My Account
+          </router-link>
+          <router-link to="/login" class="activeBtn logoutBtn"
+          @click="logoutClicked()">
+            <i class="bi bi-box-arrow-left"></i>
+              Logout
           </router-link>
         </aside>
         <!--end of side nav-->  
@@ -70,6 +75,35 @@
       
       <div class="col-lg-10 pt-5">
         <h4>Your Current Tutors</h4>
+        <table class="table table-responsive bg-light">
+          <thead>
+          <tr>
+            <th>User Type</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>BirthDate</th>
+            <th>Contact #</th>
+            <th>Rating</th>
+            <th>Remove</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr v-for="learner of tutorList">
+              <td>{{ learner.userType }}</td>
+              <td>{{ learner.userEmail }}</td>
+              <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
+              <td>{{ learner.userAge }}</td>
+              <td>{{ learner.userBdate }}</td>
+              <td>{{ learner.userContact }}</td>
+              <td>{{ learner.userRating }}</td>
+              <td>
+                <i class="bi bi-x-circle-fill text-danger buttonIcon"
+                @click="remove()"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       </div>
     </div>
@@ -116,42 +150,10 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       // return user;
     },
     methods:{
-      async editClicked(tutor){
-        this.showEdit = true;
-        this.editEmail = tutor.userEmail;
-        this.editFirstname = tutor.userFirstname;
-        this.editLastname = tutor.userLastname;
-        this.editBdate = tutor.userBdate;
-        this.editAddress = tutor.userAddress;
-        this.editContact = tutor.userContact;
-      },
-      deleteClicked(){
-        console.log("delete");
-
-
-        
-      },
-      async popupConfirm(){
-        this.tutorList = [];
-
-        this.showEdit = false;
-        await updateDoc(doc(db, "all_users", "tutor", "users", this.editEmail), {
-          // editEmail: 'test1',
-          userFirstname: this.editFirstname,
-          userLastname: this.editLastname,
-          userAge: this.editAge,
-          userBdate: this.editBdate,
-          userContact: this.editContact,
-        });
-        
-        const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
-        querySnapshot.forEach((doc) => {
-          this.tutorList.push(doc.data());
-          console.log(this.tutorList)
-        });
-      },
-      popupCancel(){
-        this.showEdit = false;
+      logoutClicked(){
+        console.log("logout clicked");
+        auth.signOut();
+        console.log(this.currentUser);
       }
     },
     async created(){
@@ -270,5 +272,15 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   aside p {
     margin: 0;
     padding: 40px 0;
+  }
+  aside .logoutBtn:hover {
+    color: #ffffff !important;
+    background:  #ff3045  !important;
+  }
+  aside .logoutBtn:hover::after {
+    box-shadow: 0 20px 0 0 #ff3045 !important;
+  }
+  aside .logoutBtn:hover:before {
+    box-shadow: 0 -20px 0 0 #ff3045   !important;
   }
 </style>

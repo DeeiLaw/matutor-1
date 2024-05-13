@@ -53,7 +53,7 @@
               <td>{{ tc.address }}</td>
               <td>{{ tc.contactNumber }}</td>
               <td>{{ tc.email }}</td>
-              <td>businesspermit.jpeg</td>
+              <td>Hover to view business premit</td>
               <td>
                 <i class="bi bi-check-circle-fill text-primary buttonIcon"
                 @click="approveClicked(tc)"> Approve</i>
