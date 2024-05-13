@@ -7,10 +7,10 @@
           <!--side nav-->
           <aside>
             <p>{ Admin Account }</p> 
-            <button id="current" type="button" disabled>
+            <router-link to="/admin/dashboard" class="activeBtn">
               <i class="bi bi-speedometer"></i>
-              Dashboard
-            </button>
+                Dashboard
+            </router-link>
             <router-link to="/admin/registrations" class="activeBtn">
               <i class="bi bi-clipboard-check-fill"></i>
               Registrations
@@ -19,10 +19,10 @@
               <i class="bi bi-people-fill"></i>
               Manage Accounts
             </router-link>
-            <router-link to="/admin/postings" class="activeBtn">
+            <button id="current" type="button" disabled>
               <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
-            </router-link>
+            </button>
             <router-link to="/login" class="activeBtn">
               <i class="bi bi-telephone-plus-fill"></i>
                 Reports
@@ -37,19 +37,17 @@
         </div>
       
         <div class="col-lg-10 pt-5">
-          <h4>Admin Dashboard</h4>
-          <h5>New Tutors</h5>
+          <h4>Active Postings</h4>
+          <h5>Tutor Postings</h5>
 
           <table class="table table-responsive bg-light">
             <thead>
             <tr>
-              <th>User Type</th>
-              <th>Email</th>
-              <th>Full Name</th>
-              <th>Age</th>
-              <th>BirthDate</th>
-              <th>Contact #</th>
-              <th>Rating</th>
+              <th>Post ID</th>
+              <th>Post Title</th>
+              <th>Posted by</th>
+              <th>Description</th>
+              <th>Tags</th>
             </tr>
             </thead>
             <tbody>
@@ -65,45 +63,16 @@
             </tbody>
           </table>
 
-          <h5>New Learners</h5>
+          <h5>Learner Postings</h5>
 
           <table class="table table-responsive bg-light">
             <thead>
             <tr>
-              <th>User Type</th>
-              <th>Email</th>
-              <th>Full Name</th>
-              <th>Age</th>
-              <th>BirthDate</th>
-              <th>Contact #</th>
-              <th>Rating</th>
-            </tr>
-            </thead>
-            <tbody>
-              <tr v-for="learner of tutorList">
-                <td>{{ learner.userType }}</td>
-                <td>{{ learner.userEmail }}</td>
-                <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
-                <td>{{ learner.userAge }}</td>
-                <td>{{ learner.userBdate }}</td>
-                <td>{{ learner.userContact }}</td>
-                <td>{{ learner.userRating }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h5>New Tutor Centers</h5>
-
-          <table class="table table-responsive bg-light">
-            <thead>
-            <tr>
-              <th>User Type</th>
-              <th>Email</th>
-              <th>Full Name</th>
-              <th>Age</th>
-              <th>BirthDate</th>
-              <th>Contact #</th>
-              <th>Rating</th>
+              <th>Post ID</th>
+              <th>Post Title</th>
+              <th>Posted by</th>
+              <th>Description</th>
+              <th>Tags</th>
             </tr>
             </thead>
             <tbody>

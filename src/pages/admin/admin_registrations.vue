@@ -18,7 +18,7 @@
               <i class="bi bi-people-fill"></i>
               Manage Accounts
           </router-link>
-          <router-link to="/login" class="activeBtn">
+          <router-link to="/admin/postings" class="activeBtn">
             <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
           </router-link>
@@ -37,34 +37,34 @@
       <div class="col-lg-10 pt-5">
         <h4>Incoming Tutor Center Registration Requests</h4>
         <table id="table" class="table table-responsive bg-light">
-        <thead>
-          <tr>
-            <th>Tutor Center Name</th>
-            <th>Address</th>
-            <th>Contact Number</th>
-            <th>Email</th>
-            <th>Business Permit</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="tc of tcList">
-            <td>{{ tc.name }}</td>
-            <td>{{ tc.address }}</td>
-            <td>{{ tc.contactNumber }}</td>
-            <td>{{ tc.email }}</td>
-            <td>businesspermit.jpeg</td>
-            <td>
-              <i class="bi bi-check-circle-fill text-primary buttonIcon"
-              @click="approveClicked(tc)"> Approve</i>
-            </td>
-            <td>
-              <i class="bi bi-x-circle-fill text-danger buttonIcon"
-              @click="denyClicked(tc)"> Deny</i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <thead>
+            <tr>
+              <th>Tutor Center Name</th>
+              <th>Address</th>
+              <th>Contact Number</th>
+              <th>Email</th>
+              <th>Business Permit</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="tc of tcList">
+              <td>{{ tc.name }}</td>
+              <td>{{ tc.address }}</td>
+              <td>{{ tc.contactNumber }}</td>
+              <td>{{ tc.email }}</td>
+              <td>businesspermit.jpeg</td>
+              <td>
+                <i class="bi bi-check-circle-fill text-primary buttonIcon"
+                @click="approveClicked(tc)"> Approve</i>
+              </td>
+              <td>
+                <i class="bi bi-x-circle-fill text-danger buttonIcon"
+                @click="denyClicked(tc)"> Deny</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       </div>
     </div>
@@ -135,14 +135,13 @@ import { collection, getDocs, updateDoc , deleteDoc} from "firebase/firestore";
           // Signed up
           const user = userCredential.user;
           console.log(user);
-
-          await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
         }).catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           alert(error.message);
         });
 
+        await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
         this.loadTable();
       },
       async denyClicked(tc){
@@ -267,7 +266,16 @@ import { collection, getDocs, updateDoc , deleteDoc} from "firebase/firestore";
     text-align: left;
     transition: 0.2s ease;
   }
-
+  aside .logoutBtn:hover {
+    color: #ffffff !important;
+    background:  #ff3045  !important;
+  }
+  aside .logoutBtn:hover::after {
+    box-shadow: 0 20px 0 0 #ff3045 !important;
+  }
+  aside .logoutBtn:hover:before {
+    box-shadow: 0 -20px 0 0 #ff3045   !important;
+  }
   aside p {
     margin: 0;
     padding: 40px 0;

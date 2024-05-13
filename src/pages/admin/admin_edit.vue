@@ -60,7 +60,7 @@
             <i class="bi bi-people-fill"></i>
             Manage Accounts
           </button>
-          <router-link to="/login" class="activeBtn">
+          <router-link to="/admin/postings" class="activeBtn">
             <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
           </router-link>
@@ -104,10 +104,10 @@
                 <i class="bi bi-pencil-square text-primary buttonIcon"
                 @click="editClicked(learner)"></i>
               </td>
-              <!-- <td>
+              <td>
                 <i class="bi bi-trash3-fill text-danger buttonIcon"
                 @click="deleteClicked"></i>
-              </td> -->
+              </td>
             </tr>
           </tbody>
         </table>

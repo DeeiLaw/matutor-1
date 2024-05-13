@@ -6,8 +6,10 @@ import RegisterTutorCenter from '../pages/Register/RegisterTutorCenter.vue'
 import adminDashboard from '../pages/admin/admin_dash.vue'
 import adminRegistrations from '../pages/admin/admin_registrations.vue'
 import adminManageUsers from '../pages/admin/admin_edit.vue'
+import adminPostings from '../pages/admin/admin_posts.vue'
 import tutorcenter_dashboard from '../pages/tutor_center/tc_dash.vue'
 import tutorcenter_mytutors from '../pages/tutor_center/tc_tutors.vue'
+
 
 import {createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase';
@@ -103,6 +105,22 @@ const routes = [
         path: '/admin/registrations',
         name: 'admin_registrations',
         component: adminRegistrations,
+        meta: { requiresAuth: true }, 
+        // Add meta field to indicate authentication requirement
+        beforeEnter: (to, from, next) => {
+            // Check if the user is authenticated
+            const user = auth.currentUser;
+            if (user) {
+                next(); // Continue to the route
+            } else {
+                next('/login'); // Redirect to the login page
+            }
+        }
+    },
+    {
+        path: '/admin/postings',
+        name: 'admin_postings',
+        component: adminPostings,
         meta: { requiresAuth: true }, 
         // Add meta field to indicate authentication requirement
         beforeEnter: (to, from, next) => {
