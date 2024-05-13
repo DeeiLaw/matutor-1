@@ -79,6 +79,13 @@
       
       <div class="col-lg-10 pt-5">
         <h4>Edit User Details (currently only gets Tutor List)</h4>
+        <div class="input">
+            <!-- <i class="bi bi-clipboard"></i> -->
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search User's Email" 
+            v-model="username"
+            @keyup.enter="loginClicked">
+          </div>
         <table class="table table-responsive bg-light">
           <thead>
           <tr>
@@ -330,5 +337,31 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   }
   .logout {
     font-size: xx-small;
+  }
+
+  .input{
+    display: flex;
+    align-items: center;
+    /* margin: auto; */
+    width: 45%;
+    min-height: 40px;
+    /* width: 480px;
+    height: 60px; */
+    background: #eaeaea;
+    border-radius: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  .input input{
+    background: transparent;
+    border: none;
+    outline: #797979;
+    font-size: 1rem;
+    width: 80%;
+  }  
+  .input i{
+    margin: 0px 3%;
+    font-size: 1.3rem;
+    color: gray;
   }
 </style>
