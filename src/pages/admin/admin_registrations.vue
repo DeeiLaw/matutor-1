@@ -1,5 +1,5 @@
 <template>
-  <div class="text-bg-dark" style="height: 100vh;">
+  <div class="" style="height: 100vh;">
     <div class="container-fluid" style="position: relative;">
       <div class="row">
         <div class="col-lg-2">
@@ -37,7 +37,7 @@
             <thead>
               <tr>
                 <th>Tutor Center Name</th>
-                <th>Address</th>
+                <th>Location</th>
                 <th>Contact Number</th>
                 <th>Email</th>
                 <th>Business Permit</th>
@@ -47,7 +47,8 @@
             <tbody>
               <tr v-for="tc of tcList">
                 <td>{{ tc.name }}</td>
-                <td>{{ tc.address }}</td>
+                <td class="gmap" @click="getGmapsSearch(tc)">{{ tc.address }}</td>
+                <!-- <td>{{ tc.address }}</td> -->
                 <td>{{ tc.contactNumber }}</td>
                 <td>{{ tc.email }}</td>
                 <td>
@@ -76,16 +77,16 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ activeTC }}'s Permit</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <img id="myimg">
+          <img class="permit" id="myimg">
         </div>
-        <div class="modal-footer">
+        <!-- <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -107,6 +108,7 @@ export default {
   data() {
     return {
       currentUser: '',
+      activeTC: '', 
       tcList: [],
     }
   },
@@ -140,13 +142,13 @@ export default {
     },
     async approveClicked(tc) {
       await setDoc(doc(db, "all_users", "tutor_center", "users", tc.email), {
-        uuid: '',
+        uuid: crypto.randomUUID(),
         email: tc.email,
         name: tc.name,
         address: tc.address,
         contactNumber: tc.contactNumber,
         password: tc.password,
-        businessPermitURL: '',
+        businessPermitURL: tc.businessPermitURL,
       });
       // this block creates an auth meaning it makes the actual account!!
       // this should only execute once the admin has approved the register
@@ -177,6 +179,7 @@ export default {
       console.log(this.currentUser);
     },
     getBusinessPermitIMG(tc) {
+      this.activeTC = tc.name;
       console.log("clicked business Permit");
       console.log(tc.businessPermitURL);
       // console.log(this.tcList);
@@ -201,15 +204,25 @@ export default {
           const img = document.getElementById('myimg');
           img.setAttribute('src', url);
           console.log(url);
-          console.log(url);
         })
         .catch((error) => {
           // Handle any errors
         });
     },
-    clearBusinessPermit() {
-      console.log("left business Permit");
-    },
+    getGmapsSearch(tc){
+      let str = tc.name.split('');
+
+      for (let i = 0; i < str.length; i++) {
+          if(str[i] === " "){
+            str[i] = "+";
+          }
+      }
+      let str2 = str.join('');
+
+      let link = "https://www.google.com/maps/search/" + str2+ "/";
+      console.log(link);
+      window.open(link, '_blank')
+    }
   },
   async created() {
     const user = ref(null);
@@ -340,5 +353,15 @@ aside .logoutBtn:hover:before {
 aside p {
   margin: 0;
   padding: 40px 0;
+}
+.permit{
+  width: 100%;
+  height: 100%;
+}
+
+.gmap{
+  color: #334dbe !important;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

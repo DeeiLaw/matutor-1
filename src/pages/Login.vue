@@ -66,9 +66,10 @@
 </template>
 
 <script>
-
+import { ref } from 'vue';
+import { auth } from '../firebase';
 import router from '../router';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
   export default{
     data(){
@@ -83,10 +84,6 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
     },
 
     methods:{
-      async checkUserType(){
-        
-
-      },
       async loginClicked(){
         if(this.fieldsIsEmpty() === false){
           const auth = getAuth();
@@ -94,6 +91,11 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
           .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
+
+            // session.storage.setItem("user", user);
+            // session.storage.getItem("user");
+            // console.log(session.storage.getItem("user"));
+
             console.log(user);
             router.push('/admin/dashboard');
             // ...
@@ -122,6 +124,10 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
       },
     },
     created(){
+      const user = ref(null);
+      user.value = auth.currentUser;
+      this.currentUser = user.value;
+
       console.log(this.currentUser);
     }
   };

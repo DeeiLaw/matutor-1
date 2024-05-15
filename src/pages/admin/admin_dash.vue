@@ -125,6 +125,7 @@
 </template>
 
 <script>
+import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence } from "firebase/auth";
 import { ref } from 'vue';
 import { auth } from '../../firebase';
 import { db } from '../../firebase';
@@ -147,11 +148,12 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       }
     },
     async created(){
-      const user = ref(null);
-      user.value = auth.currentUser;
-      this.currentUser = user.value;  
+      // const user = ref(null);
+      // user.value = auth.currentUser;
+      // this.currentUser = user.value;
       // console.log(auth.currentUser);
 
+      
       // const querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
       // querySnapshot.forEach((doc) => {
       //   this.tcList.push(doc.data());

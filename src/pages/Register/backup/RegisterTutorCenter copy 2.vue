@@ -63,7 +63,7 @@
                 ref="fileInput" accept="image/png, image/gif, image/jpeg"/> -->
                 <input type="file" name="myImage" 
                 ref="fileInput" accept="image/png, image/gif, image/jpeg"
-                @change="handleFileChange()"/>
+                @change="handleFileUpload()"/>
               </label>
             </div>
           </transition>
@@ -103,19 +103,13 @@
         address: 'Banilad, Cebu City',
         password: 'test1234',
         password2: '', //holds password confirmation textbox text
-        selectedFile: null,
+        files: [],
         businessPermitURL: '',
-
-        validation: false,
       }
     },
     methods:{
-      handleFileChange(){
-        this.selectedFile = event.target.files[0];
-        console.log(this.selectedFile.name);
-      },
       handleFileUpload(){
-        let fileTest = this.selectedFile;
+        let fileTest = event.target.files[0];
         let fileName = fileTest.name;
         const reader = new FileReader();
 
@@ -152,42 +146,39 @@
           var value = this.validateEmail();
           if(value){
             console.log("validateEmail() passed");
-
             if(this.validateContact() === true){
               console.log("validateContact() passed");
-
               if(this.validatePasswordLength() === true){
                 console.log("validatePwLength() passed");
-
                 if(this.confirmPassword() === true) {
                   console.log("confirmPw() passed");
+                  var value2 = this.emailRegistered();
+                  if(value2){
+                    console.log("email unique");
+                    var value3 = this.emailExists();
+                    if( value3){
+                      console.log("accountExists() passed");
 
-                  this.isEmailPending(this.email);
-                  // if(this.isEmailPending(this.email) === false){
-
-                  //   if(this.isEmailRegistered(this.email) === false){
-                      
-                  //     try{
-                  //       this.handleFileUpload();
-                  //       await setDoc(doc(db, "pending_register", "users", 
-                  //       "tutor_center",this.email), {
-                  //         email: this.email,
-                  //         name: this.name,
-                  //         address: this.address,
-                  //         contactNumber: this.contactNumber,
-                  //         businessPermitURL: this.businessPermitURL,
-                  //         password: this.password,
-                  //         // tutors[]: ,
-                  //         userType: "tc",
-                  //       });
-                  //       console.log("success");
-                  //       alert("Succesfully Registered!") 
-                  //       router.push('/login');
-                  //     }catch(error){
-                  //       console.log("[" +error.code + "] " + error.message);
-                  //     }
-                  //   } 
-                  // } 
+                      try{
+                        await setDoc(doc(db, "pending_register", "users", 
+                        "tutor_center",this.email), {
+                          email: this.email,
+                          name: this.name,
+                          address: this.address,
+                          contactNumber: this.contactNumber,
+                          businessPermitURL: this.businessPermitURL,
+                          password: this.password,
+                          // tutors[]: ,
+                          userType: "tc",
+                        });
+                        console.log("success");
+                        alert("Succesfully Registered!") 
+                        router.push('/login');
+                      }catch(error){
+                        console.log("[" +error.code + "] " + error.message);
+                      }
+                    } 
+                  } 
                 } 
               } 
             } 
@@ -214,9 +205,6 @@
           return true;
         } else if( this.password2 === '' || this.password2 === null){
           alert("Please confirm your password")
-          return true;
-        } else if( this.selectedFile === null){
-          alert("Please uplod a Business Permit")
           return true;
         } else {
           return false;
@@ -265,61 +253,32 @@
           return false;
         }
       },
-      async isEmailPending(email) {
-        try {
-          const docRef = doc(db, "pending_register", "users", "tutor_center", email);
-          const docSnap = await getDoc(docRef);
+      async emailRegistered(){
+        //check if already "authenticated"
+        const docRef = doc(db, "all_users", "tutor_center", "users", this.email);
+        const docSnap = await getDoc(docRef);
 
-          console.log("isEmailPending: "+docSnap.exists());
-          console.log("Pending data:", docSnap.data());
-          if(!docSnap.exists()){
-            console.log("PENSADISDIASIDIAS");
-            this.isEmailRegistered(email);
-          } else {
-            alert("Email is already Pending for Approval!")
-          }
-          // return docSnap.exists();
-        } catch (error) {
-          console.error("Error checking for pending registrations:", error);
+        if (docSnap.exists()) {
+          alert("Email is already registered");
+          console.log("[!]email exist, already registered");
+          return false;
+        } else {
+          return true;
         }
       },
-      async isEmailRegistered(email){
-        //check if already "authenticated"
+      async emailExists(){
+        //check if already pending
+        const docRef = doc(db, "pending_register", "users", "tutor_center", this.email);
+        const docSnap = await getDoc(docRef);
         
-        try {
-          const docRef = doc(db, "all_users", "tutor_center", "users", email);
-          const docSnap = await getDoc(docRef);
-
-          console.log("emailRegistered: "+docSnap.exists());
-          console.log("Registered data:", docSnap.data());
-          if(!docSnap.exists()){
-            try{
-              this.handleFileUpload();
-              await setDoc(doc(db, "pending_register", "users", 
-              "tutor_center",this.email), {
-                email: this.email,
-                name: this.name,
-                address: this.address,
-                contactNumber: this.contactNumber,
-                businessPermitURL: this.businessPermitURL,
-                password: this.password,
-                // tutors[]: ,
-                userType: "tc",
-              });
-              console.log("success");
-              alert("Succesfully Registered!") 
-              router.push('/login');
-            }catch(error){
-              console.log("[" +error.code + "] " + error.message);
-            }
-          } else {
-            alert("Email is already Registered!")
-          }
-          // return docSnap.exists();
-        } catch (error) {
-          console.error("Error checking email existence:", error);
-          
-        }
+        console.log(docSnap.exists());
+        // if (docSnap.exists()) {
+        //   alert("Email is already pending for approval");
+        //   console.log("accountExists() failed");
+        //   return false;
+        // } else {
+        //   return true;
+        // }
       },
       resetVmodel(){
         this.email = '';
@@ -335,27 +294,27 @@
     created(){
       const storage = getStorage();
 
-      // const pathReference = ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg')
-      // getDownloadURL(ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg'))
-      //   .then((url) => {
-      //     // `url` is the download URL for 'images/stars.jpg'
+      const pathReference = ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg')
+      getDownloadURL(ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg'))
+        .then((url) => {
+          // `url` is the download URL for 'images/stars.jpg'
         
-      //     // This can be downloaded directly:
-      //     const xhr = new XMLHttpRequest();
-      //     xhr.responseType = 'blob';
-      //     xhr.onload = (event) => {
-      //       const blob = xhr.response;
-      //     };
-      //     xhr.open('GET', url);
-      //     xhr.send();
+          // This can be downloaded directly:
+          const xhr = new XMLHttpRequest();
+          xhr.responseType = 'blob';
+          xhr.onload = (event) => {
+            const blob = xhr.response;
+          };
+          xhr.open('GET', url);
+          xhr.send();
         
-      //     // Or inserted into an <img> element
-      //     const img = document.getElementById('myimg');
-      //     img.setAttribute('src', url);
-      //   })
-      //   .catch((error) => {
-      //     // Handle any errors
-      //   });
+          // Or inserted into an <img> element
+          const img = document.getElementById('myimg');
+          img.setAttribute('src', url);
+        })
+        .catch((error) => {
+          // Handle any errors
+        });
       }
   };
 </script>

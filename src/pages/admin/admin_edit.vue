@@ -80,12 +80,12 @@
       <div class="col-lg-10 pt-5">
         <h4>Edit User Details (currently only gets Tutor List)</h4>
         <div class="input">
-            <!-- <i class="bi bi-clipboard"></i> -->
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Search User's Email" 
-            v-model="username"
-            @keyup.enter="loginClicked">
-          </div>
+          <!-- <i class="bi bi-clipboard"></i> -->
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search User's Email" 
+          v-model="username"
+          @keyup.enter="">
+        </div>
         <table class="table table-responsive bg-light">
           <thead>
           <tr>

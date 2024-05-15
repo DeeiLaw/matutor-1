@@ -14,7 +14,7 @@ import tutorcenter_myaccount from '../pages/tutor_center/tc_myaccount.vue'
 
 import {createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase';
-// import store from "@/store";
+// import store from "/store";
 
 // const ifNotAuthenticated = (to, from, next) => {
 //     if (!store.state. isUserLoggedIn) {
@@ -48,16 +48,6 @@ const routes = [
         name: 'Login', 
         component: Login
     },
-    // {
-    //     path: '/register-learner', 
-    //     name: 'RegisterLearner', 
-    //     component: RegisterLearner
-    // },
-    // {
-    //     path: '/register-tutor', 
-    //     name: 'RegisterTutor', 
-    //     component: RegisterTutor
-    // },
     {
         path: '/register-tutorcenter', 
         name: 'RegisterTutorCenter', 
@@ -162,8 +152,9 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
     const user = auth.currentUser;
-    if (to.meta.requiresAuth) {
-        if (!user) {
+    
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!isAuthenticated()) {
             next({
                 name: 'Login'
             })
@@ -173,14 +164,15 @@ router.beforeEach((to, from, next) => {
     } else{
         next();
     }
-    // if (to.matched.some(record => record.meta.admin)) {
-    //     if (store.getters.loggedUser.type !== 'admin') {
-    //         // Do something if the user is not an admin
-    //         // maybe redirect to a forbidden page
-    //     }
-    // }
-    // next();
+
 });
+
+function isAuthenticated(){
+    if (auth.currentUser) {
+        return true;
+    }
+}
+
 // router.beforeEach((to, from, next) => {
 //     const user = auth.currentUser;
 //     if(to.matched.some (record => record.meta.requiresAuth)){
