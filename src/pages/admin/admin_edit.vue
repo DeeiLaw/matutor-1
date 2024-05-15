@@ -125,6 +125,7 @@
 </template>
 
 <script>
+import * as bootstrap from 'bootstrap';
 import { ref } from 'vue';
 import { auth } from '../../firebase';
 import { db } from '../../firebase';

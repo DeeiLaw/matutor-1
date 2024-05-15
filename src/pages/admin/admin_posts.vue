@@ -126,6 +126,18 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
         this.tcList.push(doc.data());
         console.log(this.tcList)
       });
+    },
+    async created(){
+      const user = ref(null);
+      user.value = auth.currentUser;
+      this.currentUser = user.value;  
+      // console.log(auth.currentUser);
+
+      // const querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
+      // querySnapshot.forEach((doc) => {
+      //   this.tcList.push(doc.data());
+      //   console.log(this.tcList)
+      // });
     }
   };
 </script>

@@ -40,7 +40,7 @@
           <h4>Admin Dashboard</h4>
           <h5>New Tutors</h5>
 
-          <table class="table table-responsive bg-light">
+          <!-- <table class="table table-responsive bg-light">
             <thead>
             <tr>
               <th>User Type</th>
@@ -117,7 +117,7 @@
                 <td>{{ learner.userRating }}</td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
         </div>
       </div>
     </div>
@@ -149,14 +149,14 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     async created(){
       const user = ref(null);
       user.value = auth.currentUser;
-      console.log(auth.currentUser);
       this.currentUser = user.value;  
+      // console.log(auth.currentUser);
 
-      const querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
-      querySnapshot.forEach((doc) => {
-        this.tcList.push(doc.data());
-        console.log(this.tcList)
-      });
+      // const querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
+      // querySnapshot.forEach((doc) => {
+      //   this.tcList.push(doc.data());
+      //   console.log(this.tcList)
+      // });
     }
   };
 </script>

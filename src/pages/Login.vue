@@ -66,6 +66,7 @@
 </template>
 
 <script>
+
 import router from '../router';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 

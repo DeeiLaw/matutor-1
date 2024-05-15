@@ -14,22 +14,28 @@ import tutorcenter_myaccount from '../pages/tutor_center/tc_myaccount.vue'
 
 import {createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase';
+// import store from "@/store";
 
-const ifNotAuthenticated = (to, from, next) => {
-    if (!store.state. isUserLoggedIn) {
-        next();
-        return;
-    }
-    next("/");
-};
+// const ifNotAuthenticated = (to, from, next) => {
+//     if (!store.state. isUserLoggedIn) {
+//         next();
+//         return;
+//     }
+//     next("/");
+// };
 
-const ifAuthenticated = (to, from, next) => {
-    if (store.state. isUserLoggedIn) {
-        next();
-        return;
-    }
-    next("/login");
-};
+// const ifAuthenticated = (to, from, next) => {
+//     router.beforeEach
+//     if (!store.state. isUserLoggedIn) {
+//         next("/");
+//     } else if(store.state. isUserLoggedIn) {
+//         next();
+//     } else {
+//         next();
+//     }
+//     console.log(isUserLoggedIn);
+//     next("/login");
+// };
 
 const routes = [
     {   
@@ -85,18 +91,19 @@ const routes = [
         path: '/admin/dashboard',
         name: 'admin_dashboard',
         component: adminDashboard,
-        beforeEnter: ifAuthenticated,
+        // beforeEnter: ifAuthenticated,
+
         meta: { requiresAuth: true }, 
         //Add meta field to indicate authentication requirement
-        beforeEnter: (to, from, next) => {
-            // Check if the user is authenticated
-            const user = auth.currentUser;
-            if (user) {
-                next(); // Continue to the route
-            } else {
-                next('/login'); // Redirect to the login page
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the user is authenticated
+        //     const user = auth.currentUser;
+        //     if (user) {
+        //         next(); // Continue to the route
+        //     } else {
+        //         next('/login'); // Redirect to the login page
+        //     }
+        // }
     },
     {
         path: '/admin/manage-users',
@@ -104,31 +111,32 @@ const routes = [
         component: adminManageUsers,
         meta: { requiresAuth: true },
         // Add meta field to indicate authentication requirement
-        beforeEnter: (to, from, next) => {
-            // Check if the user is authenticated
-            const user = auth.currentUser;
-            if (user) {
-                next(); // Continue to the route
-            } else {
-                next('/login'); // Redirect to the login page
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the user is authenticated
+        //     const user = auth.currentUser;
+        //     if (user) {
+        //         next(); // Continue to the route
+        //     } else {
+        //         next('/login'); // Redirect to the login page
+        //     }
+        // }
     },
     {
         path: '/admin/registrations',
         name: 'admin_registrations',
         component: adminRegistrations,
-        meta: { requiresAuth: true }, 
+        meta: { requiresAuth: true },
+
         // Add meta field to indicate authentication requirement
-        beforeEnter: (to, from, next) => {
-            // Check if the user is authenticated
-            const user = auth.currentUser;
-            if (user) {
-                next(); // Continue to the route
-            } else {
-                next('/login'); // Redirect to the login page
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the user is authenticated
+        //     const user = auth.currentUser;
+        //     if (user) {
+        //         next(); // Continue to the route
+        //     } else {
+        //         next('/login'); // Redirect to the login page
+        //     }
+        // }
     },
     {
         path: '/admin/postings',
@@ -136,21 +144,67 @@ const routes = [
         component: adminPostings,
         meta: { requiresAuth: true }, 
         // Add meta field to indicate authentication requirement
-        beforeEnter: (to, from, next) => {
-            // Check if the user is authenticated
-            const user = auth.currentUser;
-            if (user) {
-                next(); // Continue to the route
-            } else {
-                next('/login'); // Redirect to the login page
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     // Check if the user is authenticated
+        //     const user = auth.currentUser;
+        //     if (user) {
+        //         next(); // Continue to the route
+        //     } else {
+        //         next('/login'); // Redirect to the login page
+        //     }
+        // }
     }
-]
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
+router.beforeEach((to, from, next) => {
+    const user = auth.currentUser;
+    if (to.meta.requiresAuth) {
+        if (!user) {
+            next({
+                name: 'Login'
+            })
+        } else {
+            next();
+        }
+    } else{
+        next();
+    }
+    // if (to.matched.some(record => record.meta.admin)) {
+    //     if (store.getters.loggedUser.type !== 'admin') {
+    //         // Do something if the user is not an admin
+    //         // maybe redirect to a forbidden page
+    //     }
+    // }
+    // next();
+});
+// router.beforeEach((to, from, next) => {
+//     const user = auth.currentUser;
+//     if(to.matched.some (record => record.meta.requiresAuth)){
+//         if(!user){
+//             next({
+//               name: "Login"  
+//             });
+//         }
+//     } else {
+//         next();
+//     }
+// });
+// router.beforeEach((to, from, next) => {
+//     const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
+//     const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
+//     const isLoggedin = store.state. isUserLoggedIn;
 
+//     console.log(router);
+//     if (requiresAuth && !isLoggedin) {
+//       next("/");
+//     } else if (requiresGuest && isLoggedin) {
+//       next("/admin/dashboard");
+//     }  else {
+//       next();
+//     }
+//   });
 export default router

@@ -59,8 +59,6 @@
             <div class="col-md-7 d-flex input">
               <i class="bi bi-image"></i>
               <label>Upload an Image of your Business Permit
-                <!-- <input type="file" name="myImage" 
-                ref="fileInput" accept="image/png, image/gif, image/jpeg"/> -->
                 <input type="file" name="myImage" 
                 ref="fileInput" accept="image/png, image/gif, image/jpeg"
                 @change="handleFileUpload()"/>
@@ -90,7 +88,7 @@
   import { doc, setDoc, getDoc } from "firebase/firestore";
   import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
   // import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-  import { getStorage, ref, getDownloadURL,uploadBytes } from "firebase/storage";
+  import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
   export default{
     data(){
@@ -133,8 +131,10 @@
         }
         reader.readAsDataURL(fileTest);
         
-        this.businessPermitURL = fileName;
-        console.log(this.businessPermitURL)
+
+      },
+      uploadImage(){
+        
       },
       async registerClicked(){
         console.log(typeof docRef);
@@ -156,9 +156,8 @@
                   if(value2){
                     console.log("email unique");
                     var value3 = this.emailExists();
-                    if( value3){
+                    if(!value3){
                       console.log("accountExists() passed");
-
                       try{
                         await setDoc(doc(db, "pending_register", "users", 
                         "tutor_center",this.email), {
@@ -168,8 +167,6 @@
                           contactNumber: this.contactNumber,
                           businessPermitURL: this.businessPermitURL,
                           password: this.password,
-                          // tutors[]: ,
-                          userType: "tc",
                         });
                         console.log("success");
                         alert("Succesfully Registered!") 
@@ -293,7 +290,6 @@
     },
     created(){
       const storage = getStorage();
-
       const pathReference = ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg')
       getDownloadURL(ref(storage, '438162893_8013419042015074_4233462147508933817_n.jpg'))
         .then((url) => {
