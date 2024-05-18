@@ -98,8 +98,6 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
             }
             console.log(localStorage.getItem("isLoggedIn"));
             // router.push('/admin/dashboard');
-            // ...
-            
           })
           .catch((error) => {
             const errorCode = error.code;
