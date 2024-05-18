@@ -1,5 +1,6 @@
 import Login from '../pages/Login.vue'
 import Landing from '../pages/Landing.vue'
+import download from '../pages/download.vue'
 // import RegisterLearner from '../pages/Register/RegisterLearner.vue'
 // import RegisterTutor from '../pages/Register/RegisterTutor.vue'
 import RegisterTutorCenter from '../pages/Register/RegisterTutorCenter.vue'
@@ -12,6 +13,8 @@ import tutorcenter_dashboard from '../pages/tutor_center/tc_dash.vue'
 import tutorcenter_mytutors from '../pages/tutor_center/tc_tutors.vue'
 import tutorcenter_reviews from '../pages/tutor_center/tc_reviews.vue'
 import tutorcenter_myaccount from '../pages/tutor_center/tc_myaccount.vue'
+
+
 
 import {createRouter, createWebHistory } from 'vue-router'
 import { auth } from '../firebase';
@@ -65,6 +68,11 @@ const routes = [
                 router.back();
             }
         }
+    },
+    {
+      path: '/download',
+      name: 'download',
+      component: download, 
     },
     {
         path: '/mytutors',

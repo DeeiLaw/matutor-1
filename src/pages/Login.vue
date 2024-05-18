@@ -144,8 +144,9 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
             localStorage.setItem("isLoggedIn", true);
             router.push('/dashboard');
           } else {
-            //learner or tutor router
-            
+            router.push('/download');
+            localStorage.setItem("isLoggedIn", false);
+            //learner or tutor router    
           }
         }
       },
