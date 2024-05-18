@@ -7,6 +7,7 @@ import adminDashboard from '../pages/admin/admin_dash.vue'
 import adminRegistrations from '../pages/admin/admin_registrations.vue'
 import adminManageUsers from '../pages/admin/admin_edit.vue'
 import adminPostings from '../pages/admin/admin_posts.vue'
+import adminReports from '../pages/admin/admin_reports.vue'
 import tutorcenter_dashboard from '../pages/tutor_center/tc_dash.vue'
 import tutorcenter_mytutors from '../pages/tutor_center/tc_tutors.vue'
 import tutorcenter_reviews from '../pages/tutor_center/tc_reviews.vue'
@@ -58,6 +59,9 @@ const routes = [
         name: 'tutorcenter_dashboard',
         component: tutorcenter_dashboard,
         //require auth as normal user here
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: '/mytutors',
@@ -143,6 +147,12 @@ const routes = [
         //         next('/login'); // Redirect to the login page
         //     }
         // }
+    },
+    {
+        path: '/admin/reports',
+        name: 'admin_reports',
+        component: adminReports,
+        meta: { requiresAuth: true },
     }
 ];
 
@@ -154,10 +164,12 @@ router.beforeEach((to, from, next) => {
     const user = auth.currentUser;
     
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isAuthenticated()) {
+        if (!isAuthenticated() && !isLoggedin()) {
             next({
                 name: 'Login'
             })
+        } else if(isAuthenticated() && isLoggedin()) {
+            next();
         } else {
             next();
         }
@@ -170,6 +182,11 @@ router.beforeEach((to, from, next) => {
 function isAuthenticated(){
     if (auth.currentUser) {
         return true;
+    }
+}
+function isLoggedin(){
+    if(localStorage.getItem("isLoggedIn") === true || localStorage.getItem("isLoggedIn") === 'true'){
+        return true
     }
 }
 

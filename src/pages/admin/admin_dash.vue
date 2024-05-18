@@ -23,7 +23,7 @@
               <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
             </router-link>
-            <router-link to="/login" class="activeBtn">
+            <router-link to="/admin/reports" class="activeBtn">
               <i class="bi bi-telephone-plus-fill"></i>
                 Reports
             </router-link>
@@ -38,8 +38,52 @@
       
         <div class="col-lg-10 pt-5">
           <h4>Admin Dashboard</h4>
-          <h5>New Tutors</h5>
+          <h5>Pending Registrations</h5>
 
+          <table id="table" class="table table-responsive bg-light">
+            <thead>
+              <tr>
+                <th>Tutor Center Name</th>
+                <th>Location</th>
+                <th>Contact Number</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="tc of tcList">
+                <td>{{ tc.name }}</td>
+                <td>{{ tc.address }}</td>
+                <td>{{ tc.contactNumber }}</td>
+                <td>{{ tc.email }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5>Active Users</h5>
+          <table class="table table-responsive bg-light">
+          <thead>
+          <tr>
+            <th>User Type</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>BirthDate</th>
+            <th>Contact #</th>
+            <th>Rating</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr v-for="learner of tutorList">
+              <td>{{ learner.userType }}</td>
+              <td>{{ learner.userEmail }}</td>
+              <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
+              <td>{{ learner.userAge }}</td>
+              <td>{{ learner.userBdate }}</td>
+              <td>{{ learner.userContact }}</td>
+              <td>{{ learner.userRating }}</td>
+            </tr>
+          </tbody>
+        </table>
           <!-- <table class="table table-responsive bg-light">
             <thead>
             <tr>
@@ -135,6 +179,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       return {
         currentUser: '',
         tcList: [],
+        tutorList: [],
       }
     },
     setup(){
@@ -142,8 +187,9 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     },
     methods:{
       logoutClicked(){
-        console.log("logout clicked");
         auth.signOut();
+        localStorage.setItem("isLoggedIn", false);
+        console.log(localStorage.getItem("isLoggedIn"))
         console.log(this.currentUser);
       }
     },
@@ -154,11 +200,16 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       // console.log(auth.currentUser);
 
       
-      // const querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
-      // querySnapshot.forEach((doc) => {
-      //   this.tcList.push(doc.data());
-      //   console.log(this.tcList)
-      // });
+      let querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
+      querySnapshot.forEach((doc) => {
+        this.tcList.push(doc.data());
+        console.log(this.tcList)
+      });
+      
+      querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
+      querySnapshot.forEach((doc) => {
+        this.tutorList.push(doc.data());
+      });
     }
   };
 </script>

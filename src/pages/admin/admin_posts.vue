@@ -23,7 +23,7 @@
               <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
             </button>
-            <router-link to="/login" class="activeBtn">
+            <router-link to="/admin/reports" class="activeBtn">
               <i class="bi bi-telephone-plus-fill"></i>
                 Reports
             </router-link>

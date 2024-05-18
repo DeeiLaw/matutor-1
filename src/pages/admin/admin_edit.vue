@@ -64,9 +64,9 @@
             <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
           </router-link>
-          <router-link to="/login" class="activeBtn">
-            <i class="bi bi-telephone-plus-fill"></i>
-              Reports
+          <router-link to="/admin/reports" class="activeBtn">
+              <i class="bi bi-telephone-plus-fill"></i>
+                Reports
           </router-link>
           <router-link to="/login" class="activeBtn logoutBtn"
           @click="logoutClicked()">
@@ -216,7 +216,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       querySnapshot.forEach((doc) => {
         this.tutorList.push(doc.data());
       });
-
+      
       console.log(user);
     }
   };

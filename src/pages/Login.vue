@@ -46,13 +46,12 @@
         </transition>
         <transition name="fadeLong" appear>
           <div class="col-md-7 d-flex submit-container">
-          
             <button type="button" class="btn btn-primary buttonLogin" 
               @click="loginClicked"
               @keyup.enter="loginClicked">
               Login
             </button>
-          
+
             <button type="button" class="btn btn-secondary buttonRegister"
               @mouseover="registerText ='Register Now!'"
               @mouseleave="registerText ='New to Matutor?'"
@@ -91,12 +90,12 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
           .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-
-            // session.storage.setItem("user", user);
-            // session.storage.getItem("user");
-            // console.log(session.storage.getItem("user"));
-
-            console.log(user);
+            if(auth){
+              localStorage.setItem("isLoggedIn", true);
+            } else {
+              localStorage.setItem("isLoggedIn", false);
+            }
+            console.log(localStorage.getItem("isLoggedIn"));
             router.push('/admin/dashboard');
             // ...
             
@@ -120,7 +119,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
         }
       },
       registerClicked(){
-          router.push('/register-tutorcenter');
+        router.push('/register-tutorcenter');
       },
     },
     created(){
@@ -128,7 +127,9 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
       user.value = auth.currentUser;
       this.currentUser = user.value;
 
-      console.log(this.currentUser);
+      if(localStorage.getItem('isLoggedIn') === 'true'){
+        router.push('./admin/dashboard')
+      }
     }
   };
 </script>

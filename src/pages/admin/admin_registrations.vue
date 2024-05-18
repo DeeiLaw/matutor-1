@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="height: 100vh;">
+  <div class="text-bg-dark" style="height: 100vh;">
     <div class="container-fluid" style="position: relative;">
       <div class="row">
         <div class="col-lg-2">
@@ -21,9 +21,9 @@
               <i class="bi bi-telephone-plus-fill"></i>
               Active Posts
             </router-link>
-            <router-link to="/login" class="activeBtn">
+            <router-link to="/admin/reports" class="activeBtn">
               <i class="bi bi-telephone-plus-fill"></i>
-              Reports
+                Reports
             </router-link>
             <router-link to="/login" class="activeBtn logoutBtn" @click="logoutClicked()">
               <i class="bi bi-box-arrow-left"></i>
@@ -41,7 +41,6 @@
                 <th>Contact Number</th>
                 <th>Email</th>
                 <th>Business Permit</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -56,7 +55,7 @@
                   <button type="button" class="btn btn-primary" 
                   data-bs-toggle="modal" data-bs-target="#exampleModal"
                   @click="getBusinessPermitIMG(tc)">
-                    Button
+                    View Permit
                   </button>
                 </td>
                 <td>
@@ -218,7 +217,7 @@ export default {
           }
       }
       let str2 = str.join('');
-
+      str2 = str2 + " " + tc.address;
       let link = "https://www.google.com/maps/search/" + str2+ "/";
       console.log(link);
       window.open(link, '_blank')
