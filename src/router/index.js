@@ -58,101 +58,116 @@ const routes = [
         path: '/dashboard',
         name: 'tutorcenter_dashboard',
         component: tutorcenter_dashboard,
-        //require auth as normal user here
-        meta: {
-            requiresAuth: true
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'tc'){
+                next();
+            } else {
+                router.back();
+            }
         }
     },
     {
         path: '/mytutors',
         name: 'tutorcenter_mytutors',
         component: tutorcenter_mytutors,
-        //require auth as normal user here
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'tc'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/reviews',
         name: 'tutorcenter_reviews',
         component: tutorcenter_reviews,
-        //require auth as normal user here
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'tc'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/myaccount',
         name: 'tutorcenter_myaccount',
         component: tutorcenter_myaccount,
-        //require auth as normal user here
+        meta: { requiresAuth: true }, 
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'tc'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/admin/dashboard',
         name: 'admin_dashboard',
-        component: adminDashboard,
-        // beforeEnter: ifAuthenticated,
-
+        component: adminDashboard,  
         meta: { requiresAuth: true }, 
-        //Add meta field to indicate authentication requirement
-        // beforeEnter: (to, from, next) => {
-        //     // Check if the user is authenticated
-        //     const user = auth.currentUser;
-        //     if (user) {
-        //         next(); // Continue to the route
-        //     } else {
-        //         next('/login'); // Redirect to the login page
-        //     }
-        // }
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'admin' || userType() === 'superAdmin'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/admin/manage-users',
         name: 'admin_manageUsers',
         component: adminManageUsers,
         meta: { requiresAuth: true },
-        // Add meta field to indicate authentication requirement
-        // beforeEnter: (to, from, next) => {
-        //     // Check if the user is authenticated
-        //     const user = auth.currentUser;
-        //     if (user) {
-        //         next(); // Continue to the route
-        //     } else {
-        //         next('/login'); // Redirect to the login page
-        //     }
-        // }
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'admin' || userType() === 'superAdmin'){
+                next();
+            } else {
+                router.back();
+                
+            }
+        }
     },
     {
         path: '/admin/registrations',
         name: 'admin_registrations',
         component: adminRegistrations,
         meta: { requiresAuth: true },
-
-        // Add meta field to indicate authentication requirement
-        // beforeEnter: (to, from, next) => {
-        //     // Check if the user is authenticated
-        //     const user = auth.currentUser;
-        //     if (user) {
-        //         next(); // Continue to the route
-        //     } else {
-        //         next('/login'); // Redirect to the login page
-        //     }
-        // }
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'admin' || userType() === 'superAdmin'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/admin/postings',
         name: 'admin_postings',
         component: adminPostings,
         meta: { requiresAuth: true }, 
-        // Add meta field to indicate authentication requirement
-        // beforeEnter: (to, from, next) => {
-        //     // Check if the user is authenticated
-        //     const user = auth.currentUser;
-        //     if (user) {
-        //         next(); // Continue to the route
-        //     } else {
-        //         next('/login'); // Redirect to the login page
-        //     }
-        // }
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'admin' || userType() === 'superAdmin'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     },
     {
         path: '/admin/reports',
         name: 'admin_reports',
         component: adminReports,
         meta: { requiresAuth: true },
+        beforeEnter: (to, from, next) => {
+            if(userType() === 'admin' || userType() === 'superAdmin'){
+                next();
+            } else {
+                router.back();
+            }
+        }
     }
 ];
 
