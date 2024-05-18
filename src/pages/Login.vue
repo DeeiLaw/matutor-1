@@ -16,9 +16,9 @@
           <div class="col-md-12 d-flex input">
             <!-- <i class="bi bi-clipboard"></i> -->
             <i class="bi bi-envelope-at-fill"></i>
-            <input type="text" placeholder="Email" 
+            <input id="email" type="text" placeholder="Email" 
             v-model="username"
-            @keyup.enter="loginClicked">
+            @keyup.enter="loginClicked" autocomplete="on">
           </div>
         </transition>
         <transition name="inRight" appear>
@@ -27,11 +27,11 @@
             <!-- <img src="../src/assets/icons/password.png"  alt="wala"> -->
             <i class="bi bi-lock-fill"></i>
             <!-- text box with hidden text password -->
-            <input v-show="hidePass" type="password" placeholder="Password"
+            <input id="passwordHidden" v-show="hidePass" type="password" placeholder="Password"
               v-model="password"
               @keyup.enter="loginClicked">
             <!-- text box with show text password -->
-            <input v-show="!hidePass" type="text" placeholder="Password"
+            <input id="passwordShow" v-show="!hidePass" type="text" placeholder="Password"
               v-model="password"
               @keyup.enter="loginClicked">
               <!-- show password -->
@@ -66,8 +66,9 @@
 
 <script>
 import { ref } from 'vue';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import router from '../router';
+import { doc, getDocFromCache, getDoc } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
   export default{
@@ -91,12 +92,12 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
             // Signed in 
             const user = userCredential.user;
             if(auth){
-              localStorage.setItem("isLoggedIn", true);
+              this.checkUserType();
             } else {
               localStorage.setItem("isLoggedIn", false);
             }
             console.log(localStorage.getItem("isLoggedIn"));
-            router.push('/admin/dashboard');
+            // router.push('/admin/dashboard');
             // ...
             
           })
@@ -121,15 +122,44 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
       registerClicked(){
         router.push('/register-tutorcenter');
       },
+      async checkUserType(){
+
+        let docRef = doc(db, "all_users", "admin", "users", this.username);
+        let docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // console.log("Document data:", docSnap.data().userType);
+          //admin router
+          if(docSnap.data().userType === "admin" || docSnap.data().userType === "superAdmin"){
+            localStorage.setItem("userType", docSnap.data().userType);
+            localStorage.setItem("isLoggedIn", true);
+            router.push('/admin/dashboard');
+          }
+        } else {
+          //tutor center router
+          docRef = doc(db, "all_users", "tutor_center", "users", this.username);
+          localStorage.setItem("isLoggedIn", true);
+          docSnap = await getDoc(docRef);
+
+          if(docSnap.data().userType === "tc"){
+            localStorage.setItem("userType", docSnap.data().userType);
+            localStorage.setItem("isLoggedIn", true);
+            router.push('/dashboard');
+          } else {
+            //learner or tutor router
+            
+          }
+        }
+      },
     },
     created(){
       const user = ref(null);
       user.value = auth.currentUser;
       this.currentUser = user.value;
 
-      if(localStorage.getItem('isLoggedIn') === 'true'){
-        router.push('./admin/dashboard')
-      }
+      // if(localStorage.getItem('isLoggedIn') === 'true'){
+      //   router.push('./admin/dashboard')
+      // }
     }
   };
 </script>

@@ -144,6 +144,7 @@ export default {
         uuid: crypto.randomUUID(),
         email: tc.email,
         name: tc.name,
+        userType: "tc",
         address: tc.address,
         contactNumber: tc.contactNumber,
         password: tc.password,

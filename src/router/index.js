@@ -160,6 +160,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
 router.beforeEach((to, from, next) => {
     const user = auth.currentUser;
     
@@ -184,9 +185,22 @@ function isAuthenticated(){
         return true;
     }
 }
+
 function isLoggedin(){
     if(localStorage.getItem("isLoggedIn") === true || localStorage.getItem("isLoggedIn") === 'true'){
         return true
+    }
+}
+
+function userType(){
+    if(localStorage.getItem("userType") === 'admin'){
+        return 'admin'
+    } else if(localStorage.getItem("userType") === 'superAdmin') {
+        return 'superAdmin'
+    } else if(localStorage.getItem("userType") === 'tc'){
+        return 'tc'
+    } else {
+        return 'guess'
     }
 }
 
