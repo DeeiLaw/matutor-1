@@ -174,10 +174,11 @@ export default {
       this.loadTable();
     },
     logoutClicked() {
-      localStorage.setItem("isLoggedIn", false);
-      console.log(localStorage.getItem("isLoggedIn"))
-      auth.signOut();
-      console.log(this.currentUser);
+        auth.signOut();
+        localStorage.setItem("isLoggedIn", false);
+        console.log(localStorage.getItem("isLoggedIn"))
+        localStorage.setItem("userType", null);
+        console.log(this.currentUser);
     },
     getBusinessPermitIMG(tc) {
       this.activeTC = tc.name;

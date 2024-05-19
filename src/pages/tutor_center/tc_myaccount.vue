@@ -122,8 +122,10 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     },
     methods:{
       logoutClicked(){
-        console.log("logout clicked");
         auth.signOut();
+        localStorage.setItem("isLoggedIn", false);
+        console.log(localStorage.getItem("isLoggedIn"))
+        localStorage.setItem("userType", null);
         console.log(this.currentUser);
       }
     },

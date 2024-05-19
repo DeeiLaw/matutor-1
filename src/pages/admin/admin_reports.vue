@@ -94,19 +94,21 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       // console.log(auth.currentUser);
       this.currentUser = user.value;  
       
+      //get learner users
       let querySnapshot = await getDocs(collection(db, "/all_users/learner/users"));
         querySnapshot.forEach((doc) => {
         this.learnerList.push(doc.data());
       });
-     
+     //get learner users' posts
       for await (const learner of this.learnerList) {
-        const temp = await getDocs(collection(db, "createdPosts", "createdPost_learner", learner.userEmail));
+        const temp = await getDocs(collection(db, "createdPosts", "createdPost_learner", 
+        learner.userEmail));
         temp.forEach(doc => {
           this.learnerPostList.push(doc.data());
         })
       }
     
-
+      
       this.learnerPostList.forEach(post => {
         console.log(post)
         if (this.badWords.some(x => post.postTitle.includes(x) || post.postDescription.includes(x))) {    
@@ -120,8 +122,10 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     },
     methods:{
       logoutClicked(){
-        console.log(localStorage.getItem("isLoggedIn"))
         auth.signOut();
+        localStorage.setItem("isLoggedIn", false);
+        console.log(localStorage.getItem("isLoggedIn"))
+        localStorage.setItem("userType", null);
         console.log(this.currentUser);
       },
 

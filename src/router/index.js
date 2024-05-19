@@ -200,7 +200,6 @@ router.beforeEach((to, from, next) => {
     } else{
         next();
     }
-
 });
 
 function isAuthenticated(){

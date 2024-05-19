@@ -190,6 +190,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
         auth.signOut();
         localStorage.setItem("isLoggedIn", false);
         console.log(localStorage.getItem("isLoggedIn"))
+        localStorage.setItem("userType", null);
         console.log(this.currentUser);
       }
     },
