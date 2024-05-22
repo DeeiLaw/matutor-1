@@ -1,131 +1,38 @@
 <template>
-  <!-- Pop up edit field-->
-  <transition name="fade">
-    <div class="editField bg-light" style="width: 650px;" v-show="showEdit">
-      <h1>{{ editEmail }}</h1>
-      <div class="txtContainer col-md-12 row ">
-        <!-- <div class="col-md-12">
-          <input type="text" placeholder="Email" 
-          v-model="editEmail">
-        </div> -->
-        <div class="col-md-6">
-          <input type="text" placeholder="Firstname" 
-          v-model="editFirstname">
-        </div>
-        <div class="col-md-6 ">
-          <input type="text" placeholder="Lastname"
-          v-model="editLastname">
-        </div>
-        <div class="col-md-12">
-          <input type="text" placeholder="Birthdate"
-          v-model="editBdate">
-          <input type="text" placeholder="Address"
-          v-model="editAddress">
-          <input type="text" placeholder="Contact #"
-          v-model="editContact">
-        </div>
-      </div>
-      <button type="button" class="btn btn-primary" 
-      @click="popupConfirm">
-        Confirm
-      </button>
-      <button type="button" class="btn btn-danger" 
-      @click="popupCancel">
-        Cancel
-      </button>
-    </div>
-  </transition>
-  <div class="dark" style="height: 100vh;" v-show="showEdit">
-    <!-- BG of Pop up edit field-->  
-  </div>
-  <!-- end of Pop up edit field-->
-  
   <div class="text-bg-dark" style="height: 100vh;" v-show="!showEdit">
-
     <div class="container-fluid" style="position: relative;">
       <div class="row">
         <div class="col-lg-2">
-        <!--side nav-->
-        <aside>
-          <p> {TC Account name} </p>
-          <button id="current" type="button" disabled>
-            <i class="bi bi-speedometer"></i>
-            Dashboard
-          </button>
-          <router-link to="/mytutors" class="activeBtn">
-            <i class="bi bi-clipboard-check-fill"></i>
-            My Tutors
-          </router-link>
-          <router-link to="/reviews" class="activeBtn">
-            <i class="bi bi-telephone-plus-fill"></i>
-            Reviews
-          </router-link>
-          <router-link to="/myaccount" class="activeBtn">
-            <i class="bi bi-telephone-plus-fill"></i>
-            My Account
-          </router-link>
-          <router-link to="/login" class="activeBtn logoutBtn"
-          @click="logoutClicked()">
-            <i class="bi bi-box-arrow-left"></i>
-              Logout
-          </router-link>
-        </aside>
-        <!--end of side nav-->  
-      </div>
-      
-      <div class="col-lg-10 pt-5">
-        <h4>Tutor Center Dashboard</h4>
-
-        <h5>Your Tutors' Recent Reviews(Max 10)</h5>
-        <table class="table table-responsive bg-light">
-          <thead>
-            <tr>
-              <th>Rating</th>
-              <th>Tutor Name</th>
-              <th>Reviewed by</th>
-              <th>Review description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="rating">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-half"></i>
-                  <i class="bi bi-star"></i>
-              </td>
-              <td>Tutor's Name</td>
-              <td>Learner's Name</td>
-              <td>
-                  Lorem Ipsum Dolor sit amet. The Quick brown fox jumps over the lazy dog
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <h5>Your Tutors (Max 10 Sort by rating)</h5>
-        <table class="table table-responsive bg-light">
-          <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Age</th>
-            <th>Contact #</th>
-            <th>Rating</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr v-for="learner of tutorList">
-              <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
-              <td>{{ learner.userEmail }}</td>
-              <td>{{ learner.userAge }}</td>
-              <td>{{ learner.userContact }}</td>
-              <td>{{ learner.userRating }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <!--side nav-->
+          <aside>
+            <p> {TC Account Name} </p>
+            <router-link to="/dashboard" class="activeBtn">
+              <i class="bi bi-speedometer"></i>
+              Dashboard
+            </router-link>
+            <button id="current" type="button" disabled>
+              <i class="bi bi-clipboard-check-fill"></i>
+              My Tutors
+            </button>
+            <router-link to="/reviews" class="activeBtn">
+              <i class="bi bi-telephone-plus-fill"></i>
+              Reviews
+            </router-link>
+            <router-link to="/myaccount" class="activeBtn">
+              <i class="bi bi-telephone-plus-fill"></i>
+              My Account
+            </router-link>
+            <router-link to="/login" class="activeBtn logoutBtn"
+            @click="logoutClicked()">
+              <i class="bi bi-box-arrow-left"></i>
+                Logout
+            </router-link>
+          </aside>
+          <!--end of side nav-->  
+        </div>
+        <div class="col-lg-10 pt-5">
+          <h4>Your Current Tutors</h4>
+        </div>
       </div>
     </div>
   </div>
@@ -154,7 +61,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       }
     },
     setup(){
-      // const user = ref(null);
+      // const user = ref(null);s
       // const db = getFirestore();
       // const usersList = ref([]);
       // onMounted(async () => {
@@ -305,8 +212,5 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   }
   aside .logoutBtn:hover:before {
     box-shadow: 0 -20px 0 0 #ff3045   !important;
-  }
-  td i{
-    color: #f3cf00;
   }
 </style>

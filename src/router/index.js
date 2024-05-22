@@ -13,6 +13,7 @@ import tutorcenter_dashboard from '../pages/tutor_center/tc_dash.vue'
 import tutorcenter_mytutors from '../pages/tutor_center/tc_tutors.vue'
 import tutorcenter_reviews from '../pages/tutor_center/tc_reviews.vue'
 import tutorcenter_myaccount from '../pages/tutor_center/tc_myaccount.vue'
+import tc_registerTutor from '../pages/tutor_center/tc_tutors-register.vue'
 
 
 
@@ -112,6 +113,19 @@ const routes = [
         }
     },
     {
+        path: '/add-tutor',
+        name:'tutorcenter_addtutor',
+        component: tc_registerTutor,
+        beforeEnter: (to, from, next) => {
+            const isRedirected = from.name === 'mytutors';
+            if (isRedirected && userType() === 'tc') {
+              next();
+            } else {
+              return false;
+            }
+          }
+    },
+    {
         path: '/admin/dashboard',
         name: 'admin_dashboard',
         component: adminDashboard,  
@@ -134,7 +148,6 @@ const routes = [
                 next();
             } else {
                 router.back();
-                
             }
         }
     },
