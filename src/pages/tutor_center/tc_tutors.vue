@@ -81,7 +81,7 @@
           <button type="button" class="btn btn-primary" 
           data-bs-toggle="modal" data-bs-target="#exampleModal"
           @click="">
-                    View Permit
+            Register a Tutor
           </button>
         <table class="table table-responsive bg-light">
           <thead>
@@ -120,105 +120,97 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">TITLE HERE</h5>
+          <h5 class="modal-title" id="exampleModalLabel">
+            Add a Tutor
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- CONTENT HERE -->
-          <!-- <div class="col-md-12">
-            <input type="text" placeholder="Email" 
-            v-model="editEmail">
-          </div> -->
-          <div class="col-md-6">
-            <input type="text" placeholder="Firstname" 
-            v-model="editFirstname">
-          </div>
-          <div class="col-md-6 ">
-            <input type="text" placeholder="Lastname"
-            v-model="editLastname">
-          </div>
-          <div class="col-md-12">
-            <input type="text" placeholder="Birthdate"
-            v-model="editBdate">
-            <input type="text" placeholder="Address"
-            v-model="editAddress">
-            <input type="text" placeholder="Contact #"
-            v-model="editContact">
+          <input class="modal-input" type="text" placeholder="Email" 
+            v-model="userEmail">
+          <input class="modal-input" type="text" placeholder="Firstname" 
+            v-model="userFirstname">
+          <input class="modal-input" type="text" placeholder="Lastname"
+            v-model="userLastname">
+          <input class="modal-input" type="text" placeholder="Birthdate"
+            v-model="userBdate">
+          <input class="modal-input" type="text" placeholder="Address"
+            v-model="userAddress">
+          <input class="modal-input" placeholder="Contact #"
+            v-model="userContact">
+          <input class="modal-input" placeholder="Password"
+            v-model="userPassword">
+          <input class="modal-input" placeholder="Confirm Password"
+            v-model="userPassword">
+          <div class="modal-buttons">
+            <button id="register" type="button" class="btn btn-primary" 
+              @click="popupConfirm">
+            Confirm
+            </button>
+            <button id="cancel" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              @click="popupCancel">
+              <i class="bi bi-x-lg"></i>
+            </button>
           </div>
         </div>
-        <button type="button" class="btn btn-primary" 
-        @click="popupConfirm">
-          Confirm
-        </button>
-        <button type="button" class="btn btn-danger" 
-        @click="popupCancel">
-          Cancel
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-import { auth } from '../../firebase';
-import { db } from '../../firebase';
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore"; 
-  export default{
-    data(){
-      return {
-        currentUser: '',
-        tutorList: [],
+  import { ref } from 'vue';
+  import { auth } from '../../firebase';
+  import { db } from '../../firebase';
+  import { collection, getDocs, doc, updateDoc } from "firebase/firestore"; 
+    export default{
+      data(){
+        return {
+          currentUser: '',
+          tutorList: [],
+          //Tutor info
+          userEmail: '',
+          userFirstname: '',
+          userLastname: '',
+          userAddress: '',
+          userPassword: '',
+          userBdate: '',
+          userContact: '',
 
-        editEmail: '',
-        editFirstname: '',
-        editLastname: '',
-        editAge: '0',
-        editBdate: '0/0/0',
-        editAddress: '',
-        editContact: '',
+          userAge: '',
+          userRating: '',
+          userSessionPrice: '',
+          userTag: [],
+          userTutoringCenter: '',
+          userType: 'tutor',
+          userUid: '',
+          userAbout: '',
+          password2: '',
+        }
+      },
+      setup(){
+      },
+      methods:{
+        logoutClicked(){
+          auth.signOut();
+          localStorage.setItem("isLoggedIn", false);
+          console.log(localStorage.getItem("isLoggedIn"))
+          localStorage.setItem("userType", null);
+          console.log(this.currentUser);
+        }
+      },
+      async created(){
+        const user = ref(null);
+        user.value = auth.currentUser;
+        this.currentUser = user.value;  
 
-        showEdit: false,
+        const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
+        querySnapshot.forEach((doc) => {
+          this.tutorList.push(doc.data());
+          console.log(this.tutorList)
+        });
       }
-    },
-    setup(){
-      // const user = ref(null);s
-      // const db = getFirestore();
-      // const usersList = ref([]);
-      // onMounted(async () => {
-        // const itemsCollection = collection(db, 'all_users/admin');
-        // try {
-        //   const querySnapshot = await getDoc(itemsCollection);
-        //   usersList.value = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        // } catch (error) {
-        //   console.error('Error fetching data from Firestore:', error.message);
-        // }
-        // user.value = auth.currentUser;
-        // console.log(user.value)
-      // })
-      // return user;
-    },
-    methods:{
-      logoutClicked(){
-        auth.signOut();
-        localStorage.setItem("isLoggedIn", false);
-        console.log(localStorage.getItem("isLoggedIn"))
-        localStorage.setItem("userType", null);
-        console.log(this.currentUser);
-      }
-    },
-    async created(){
-      const user = ref(null);
-      user.value = auth.currentUser;
-      this.currentUser = user.value;  
-
-      const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
-      querySnapshot.forEach((doc) => {
-        this.tutorList.push(doc.data());
-        console.log(this.tutorList)
-      });
-    }
-  };
+    };
 </script>
 
 <style scoped>
@@ -333,5 +325,20 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   }
   aside .logoutBtn:hover:before {
     box-shadow: 0 -20px 0 0 #ff3045   !important;
+  }
+
+  .modal-input{
+    width: 100%;
+    margin-bottom: 2%;
+  }
+  .modal-buttons{
+    width: 100%;
+  }
+  #register{
+    width: 88%;
+    margin-right: 2%;
+  }
+  #cancel{
+    width: 10%;
   }
 </style>
