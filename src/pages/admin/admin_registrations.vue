@@ -23,7 +23,7 @@
             </router-link>
             <router-link to="/admin/reports" class="activeBtn">
               <i class="bi bi-telephone-plus-fill"></i>
-                Reports
+              Reports
             </router-link>
             <router-link to="/login" class="activeBtn logoutBtn" @click="logoutClicked()">
               <i class="bi bi-box-arrow-left"></i>
@@ -52,9 +52,8 @@
                 <td>{{ tc.email }}</td>
                 <td>
                   <!-- {{tc.businessPermitURL}} -->
-                  <button type="button" class="btn btn-primary" 
-                  data-bs-toggle="modal" data-bs-target="#exampleModal"
-                  @click="getBusinessPermitIMG(tc)">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    @click="getBusinessPermitIMG(tc)">
                     View Permit
                   </button>
                 </td>
@@ -102,12 +101,13 @@ import { collection, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
 import { getStorage, getDownloadURL } from "firebase/storage";
 import { ref as storageRef } from "firebase/storage";
 import * as bootstrap from 'bootstrap';
+import axios from 'axios';
 
 export default {
   data() {
     return {
       currentUser: '',
-      activeTC: '', 
+      activeTC: '',
       tcList: [],
     }
   },
@@ -140,45 +140,59 @@ export default {
       });
     },
     async approveClicked(tc) {
-      await setDoc(doc(db, "all_users", "tutor_center", "users", tc.email), {
-        uuid: crypto.randomUUID(),
-        email: tc.email,
-        name: tc.name,
-        userType: "tc",
-        address: tc.address,
-        contactNumber: tc.contactNumber,
-        password: tc.password,
-        businessPermitURL: tc.businessPermitURL,
-      });
-      // this block creates an auth meaning it makes the actual account!!
-      // this should only execute once the admin has approved the register
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, tc.email, tc.password)
+      const emailData = {
+        to: tc.email,
+        subject: `Hello, ${tc.name}!`,
+        html: `<h1>Hello ${tc.name}</h1><p>Your registration is approved.</p>`
+      };
 
-        .then(async (userCredential) => {
-          // Signed up
-          const user = userCredential.user;
-          console.log(user);
-        }).catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(error.message);
+      try {
+        alert("Registration approved!");
+        await setDoc(doc(db, "all_users", "tutor_center", "users", tc.email), {
+          uuid: crypto.randomUUID(),
+          email: tc.email,
+          name: tc.name,
+          userType: "tc",
+          address: tc.address,
+          contactNumber: tc.contactNumber,
+          password: tc.password,
+          businessPermitURL: tc.businessPermitURL,
         });
 
-      await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
+        await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
+
+        const response = await axios.post('https://sendemail-lxr2rd7qeq-as.a.run.app/sendEmail', emailData);
+        console.log('Email sent:', response.data);
+      } catch (error) {
+        alert(`Error approving registration: ` + error.message);
+      }
       this.loadTable();
     },
     async denyClicked(tc) {
-      await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
+      const emailData = {
+        to: tc.email,
+        subject: `Hello, ${tc.name}!`,
+        html: `<h1>Hello ${tc.name}</h1><p>Your registration is denied.</p>`
+      };
+
+      try {
+        alert("Registration approved!");
+        await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
+
+        const response = await axios.post('https://sendemail-lxr2rd7qeq-as.a.run.app/sendEmail', emailData);
+        console.log('Email sent:', response.data);
+      } catch (error) {
+        alert(`Error denying registration: ` + error.message);
+      }
 
       this.loadTable();
     },
     logoutClicked() {
-        auth.signOut();
-        localStorage.setItem("isLoggedIn", false);
-        console.log(localStorage.getItem("isLoggedIn"))
-        localStorage.setItem("userType", null);
-        console.log(this.currentUser);
+      auth.signOut();
+      localStorage.setItem("isLoggedIn", false);
+      console.log(localStorage.getItem("isLoggedIn"))
+      localStorage.setItem("userType", null);
+      console.log(this.currentUser);
     },
     getBusinessPermitIMG(tc) {
       this.activeTC = tc.name;
@@ -211,17 +225,17 @@ export default {
           // Handle any errors
         });
     },
-    getGmapsSearch(tc){
+    getGmapsSearch(tc) {
       let str = tc.name.split('');
 
       for (let i = 0; i < str.length; i++) {
-          if(str[i] === " "){
-            str[i] = "+";
-          }
+        if (str[i] === " ") {
+          str[i] = "+";
+        }
       }
       let str2 = str.join('');
       str2 = str2 + " " + tc.address;
-      let link = "https://www.google.com/maps/search/" + str2+ "/";
+      let link = "https://www.google.com/maps/search/" + str2 + "/";
       console.log(link);
       window.open(link, '_blank')
     }
@@ -356,12 +370,13 @@ aside p {
   margin: 0;
   padding: 40px 0;
 }
-.permit{
+
+.permit {
   width: 100%;
   height: 100%;
 }
 
-.gmap{
+.gmap {
   color: #334dbe !important;
   text-decoration: underline;
   cursor: pointer;
