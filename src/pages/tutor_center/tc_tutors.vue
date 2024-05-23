@@ -1,46 +1,5 @@
 <template>
-  <!-- Pop up edit field-->
-  <transition name="fade">
-    <div class="editField bg-light" style="width: 650px;" v-show="showEdit">
-      <h1>{{ editEmail }}</h1>
-      <div class="txtContainer col-md-12 row ">
-        <!-- <div class="col-md-12">
-          <input type="text" placeholder="Email" 
-          v-model="editEmail">
-        </div> -->
-        <div class="col-md-6">
-          <input type="text" placeholder="Firstname" 
-          v-model="editFirstname">
-        </div>
-        <div class="col-md-6 ">
-          <input type="text" placeholder="Lastname"
-          v-model="editLastname">
-        </div>
-        <div class="col-md-12">
-          <input type="text" placeholder="Birthdate"
-          v-model="editBdate">
-          <input type="text" placeholder="Address"
-          v-model="editAddress">
-          <input type="text" placeholder="Contact #"
-          v-model="editContact">
-        </div>
-      </div>
-      <button type="button" class="btn btn-primary" 
-      @click="popupConfirm">
-        Confirm
-      </button>
-      <button type="button" class="btn btn-danger" 
-      @click="popupCancel">
-        Cancel
-      </button>
-    </div>
-  </transition>
-  <div class="dark" style="height: 100vh;" v-show="showEdit">
-    <!-- BG of Pop up edit field-->  
-  </div>
-  <!-- end of Pop up edit field-->
-  
-  <div class="text-bg-dark" style="height: 100vh;" v-show="!showEdit">
+  <div class="text-bg-dark" style="height: 100vh;">
 
     <div class="container-fluid" style="position: relative;">
       <div class="row">
