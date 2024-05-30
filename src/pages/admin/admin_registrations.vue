@@ -61,7 +61,9 @@
                   <i class="bi bi-check-circle-fill text-primary buttonIcon" @click="approveClicked(tc)"> Approve</i>
                 </td>
                 <td>
-                  <i class="bi bi-x-circle-fill text-danger buttonIcon" @click="denyClicked(tc)"> Deny</i>
+                  <i class="bi bi-x-circle-fill text-danger buttonIcon" data-bs-toggle="modal" data-bs-target="#denyMsgModal"
+                  @click="setActiveDenyTC(tc)"> Deny</i>
+                  <!-- <i class="bi bi-x-circle-fill text-danger buttonIcon" @click="denyClicked(tc)"> Deny</i> -->
                 </td>
               </tr>
             </tbody>
@@ -70,7 +72,7 @@
       </div>
     </div>
   </div>
-  <!-- Modal -->
+  <!-- Modal IMG-->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -85,6 +87,29 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button>
         </div> -->
+      </div>
+    </div>
+  </div>
+    <!-- Modal deny message-->
+    <div class="modal fade" id="denyMsgModal" tabindex="-1" aria-labelledby="denyMsgModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="denyMsgModalLabel">Cite reason {{ activeDenyTC.name }}'s for denial</h5>
+          </div>
+          <div class="modal-body">
+            <textarea class="modal-input" rows="4" cols="5" placeholder="Enter reason here..." v-model="reason"></textarea>
+            <div class="modal-buttons">
+              <button id="register" type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              @click="denyClicked(tc)">
+                Confirm
+              </button>
+              <button id="cancel" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              @click="">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -109,6 +134,8 @@ export default {
       currentUser: '',
       activeTC: '',
       tcList: [],
+      activeDenyTC: [],
+      reason: '',
     }
   },
   methods: {
@@ -124,14 +151,23 @@ export default {
     async approveClicked(tc) {
       const emailData = {
         to: tc.email,
-        subject: `[Matutor] Hello, ${tc.name}!`,
-        html: `<h1>Hello ${tc.name}</h1> <img src="https://ibb.co/34cpz4N"/>`,
-        attachments: [{
-            filename: 'email_approved.png',
-            path: 'src/email template/email_approved.png',
-            cid: 'imgbody' //same cid value as in the html img src
-        }]
+        subject: `Hello, ${tc.name} !`,
+        html: `<div style="width: 100%; text-align: center;">
+                  <h1 style="color: #016df3; font-size: 3.10rem">Hello ${tc.name}</h1> 
+                  <img src="https://i.ibb.co/SQz6YnG/email-template-tc-success.png"/>
+
+                  <div style="width: 100%; height: auto; text-align: center;">
+                    <img src="https://i.ibb.co/92G0zcv/logo-copy.png" 
+                      style="width: 25%; height: 25%; object-fit: contain; margin-top: 1.5%"/>
+                    <p style="color: #016df3;">
+                      developed by: Ysabel Madarang Colina | Timothy Tuason | Russelle Dianon <br>
+                      for BSIT - 4 CAPSTONE 42 S.Y 2023 - 2024 in University of Cebu - Banilad
+                    </p>
+                  </div>
+                </div>`,
         // html: `<h1>Hello ${tc.name}</h1> <img src="https://ibb.co/34cpz4N"/>`,
+        //https://i.ibb.co/rsy5Wpw/email-template-tc-success.png
+        //https://i.ibb.co/92G0zcv/logo-copy.png
       };
 
       try {
@@ -156,15 +192,37 @@ export default {
       }
       this.loadTable();
     },
-    async denyClicked(tc) {
+    async denyClicked() {
+      if(this.reason === '' || this.reason === null){
+        this.reason = 'no reason given';
+      }
+
+      const tc = this.activeDenyTC;
       const emailData = {
         to: tc.email,
-        subject: `[Matutor] Hello, ${tc.name}!`,
-        html: `<h1>Hello ${tc.name}</h1><p>Your registration was denied.</p>`,
-      };
+        subject: `Hello, ${tc.name}!`,
+        html: `<div style="width: 100%; text-align: center;">
+                  <h1 style="color: #016df3; font-size: 3.10rem">Hello ${tc.name}</h1> 
+                  <img src="https://i.ibb.co/86kf0Y6/email-template-tc-denied.png"/>
 
+                  <h2 style="color: #016df3;">for the reason of:</h1> 
+                  <h1 style="color: #016df3;">
+                    ${this.reason}
+                  </h2> 
+                  <div style="width: 100%; height: auto; text-align: center;">
+                    <img src="https://i.ibb.co/92G0zcv/logo-copy.png" 
+                      style="width: 25%; height: 25%; object-fit: contain; margin-top: 1.5%"/>
+                    <p style="color: #016df3;">
+                      developed by: Ysabel Madarang Colina | Timothy Tuason | Russelle Dianon <br>
+                      for BSIT - 4 CAPSTONE 42 S.Y 2023 - 2024 in University of Cebu - Banilad
+                    </p>
+                  </div>
+                </div>`,
+      };
+      this.reason = 'no reason given';
       try {
-        alert("Registration approved!");
+        alert("Registration denied!");
+
         await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
 
         const response = await axios.post('https://sendemail-lxr2rd7qeq-as.a.run.app/sendEmail', emailData);
@@ -226,6 +284,9 @@ export default {
       let link = "https://www.google.com/maps/search/" + str2 + "/";
       console.log(link);
       window.open(link, '_blank')
+    },
+    setActiveDenyTC(tc){
+      this.activeDenyTC = tc;
     }
   },
   async created() {
@@ -369,4 +430,20 @@ aside p {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.modal-input{
+    width: 100%;
+    height: 100px;
+    margin-bottom: 2%;
+  }
+  .modal-buttons{
+    width: 100%;
+  }
+  #register{
+    width: 88%;
+    margin-right: 2%;
+  }
+  #cancel{
+    width: 10%;
+  }
 </style>
