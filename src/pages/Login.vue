@@ -94,9 +94,9 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
             if(auth){
               this.checkUserType();
             } else {
-              localStorage.setItem("isLoggedIn", false);
+              sessionStorage.setItem("isLoggedIn", false);
             }
-            console.log(localStorage.getItem("isLoggedIn"));
+            console.log(sessionStorage.getItem("isLoggedIn"));
             // router.push('/admin/dashboard');
           })
           .catch((error) => {
@@ -129,23 +129,23 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
           // console.log("Document data:", docSnap.data().userType);
           //admin router
           if(docSnap.data().userType === "admin" || docSnap.data().userType === "superAdmin"){
-            localStorage.setItem("userType", docSnap.data().userType);
-            localStorage.setItem("isLoggedIn", true);
+            sessionStorage.setItem("userType", docSnap.data().userType);
+            sessionStorage.setItem("isLoggedIn", true);
             router.push('/admin/dashboard');
           }
         } else {
           //tutor center router
           docRef = doc(db, "all_users", "tutor_center", "users", this.username);
-          localStorage.setItem("isLoggedIn", true);
+          sessionStorage.setItem("isLoggedIn", true);
           docSnap = await getDoc(docRef);
 
           if(docSnap.data().userType === "tc"){
-            localStorage.setItem("userType", docSnap.data().userType);
-            localStorage.setItem("isLoggedIn", true);
+            sessionStorage.setItem("userType", docSnap.data().userType);
+            sessionStorage.setItem("isLoggedIn", true);
             router.push('/dashboard');
           } else {
             router.push('/download');
-            localStorage.setItem("isLoggedIn", false);
+            sessionStorage.setItem("isLoggedIn", false);
             //learner or tutor router    
           }
         }
@@ -156,7 +156,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
       user.value = auth.currentUser;
       this.currentUser = user.value;
 
-      // if(localStorage.getItem('isLoggedIn') === 'true'){
+      // if(sessionStorage.getItem('isLoggedIn') === 'true'){
       //   router.push('./admin/dashboard')
       // }
     }

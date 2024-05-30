@@ -222,17 +222,17 @@ function isAuthenticated(){
 }
 
 function isLoggedin(){
-    if(localStorage.getItem("isLoggedIn") === true || localStorage.getItem("isLoggedIn") === 'true'){
+    if(sessionStorage.getItem("isLoggedIn") === true || sessionStorage.getItem("isLoggedIn") === 'true'){
         return true
     }
 }
 
 function userType(){
-    if(localStorage.getItem("userType") === 'admin'){
+    if(sessionStorage.getItem("userType") === 'admin'){
         return 'admin'
-    } else if(localStorage.getItem("userType") === 'superAdmin') {
+    } else if(sessionStorage.getItem("userType") === 'superAdmin') {
         return 'superAdmin'
-    } else if(localStorage.getItem("userType") === 'tc'){
+    } else if(sessionStorage.getItem("userType") === 'tc'){
         return 'tc'
     } else {
         return 'guess'

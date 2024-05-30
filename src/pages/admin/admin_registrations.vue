@@ -111,24 +111,6 @@ export default {
       tcList: [],
     }
   },
-  // setup(){
-  //   const user = ref(null);
-  //   const db = getFirestore();
-  //   const usersList = ref([]);
-
-  //   onMounted(async () => {
-  //     const itemsCollection = collection(db, 'all_users/admin');
-  //     try {
-  //       const querySnapshot = await getDoc(itemsCollection);
-  //       usersList.value = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  //     } catch (error) {
-  //       console.error('Error fetching data from Firestore:', error.message);
-  //     }
-  //     user.value = auth.currentUser;
-  //     console.log(user.value)
-  //   })
-  //   return user;
-  // },
   methods: {
     async loadTable() {
       this.tcList = [];
@@ -142,8 +124,14 @@ export default {
     async approveClicked(tc) {
       const emailData = {
         to: tc.email,
-        subject: `Hello, ${tc.name}!`,
-        html: `<h1>Hello ${tc.name}</h1><p>Your registration is approved.</p>`
+        subject: `[Matutor] Hello, ${tc.name}!`,
+        html: `<h1>Hello ${tc.name}</h1> <img src="https://ibb.co/34cpz4N"/>`,
+        attachments: [{
+            filename: 'email_approved.png',
+            path: 'src/email template/email_approved.png',
+            cid: 'imgbody' //same cid value as in the html img src
+        }]
+        // html: `<h1>Hello ${tc.name}</h1> <img src="https://ibb.co/34cpz4N"/>`,
       };
 
       try {
@@ -171,8 +159,8 @@ export default {
     async denyClicked(tc) {
       const emailData = {
         to: tc.email,
-        subject: `Hello, ${tc.name}!`,
-        html: `<h1>Hello ${tc.name}</h1><p>Your registration is denied.</p>`
+        subject: `[Matutor] Hello, ${tc.name}!`,
+        html: `<h1>Hello ${tc.name}</h1><p>Your registration was denied.</p>`,
       };
 
       try {
@@ -189,9 +177,9 @@ export default {
     },
     logoutClicked() {
       auth.signOut();
-      localStorage.setItem("isLoggedIn", false);
-      console.log(localStorage.getItem("isLoggedIn"))
-      localStorage.setItem("userType", null);
+      sessionStorage.setItem("isLoggedIn", false);
+      console.log(sessionStorage.getItem("isLoggedIn"))
+      sessionStorage.setItem("userType", null);
       console.log(this.currentUser);
     },
     getBusinessPermitIMG(tc) {

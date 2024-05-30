@@ -101,6 +101,16 @@
             v-model="userPassword">
           <input class="modal-input" placeholder="Confirm Password"
             v-model="userPassword">
+
+          <label>Tutor's Valid ID</label>
+          <input class="modal-input" type="file" name="myImage" 
+            ref="fileInput" accept="image/png, image/gif, image/jpeg"
+            @change="handleFileChange()"/>
+
+          <label>Tutor's Selfie</label>  
+          <input class="modal-input" type="file" name="myImage" 
+            ref="fileInput" accept="image/png, image/gif, image/jpeg"
+            @change="handleFileChange()"/>
           <div class="modal-buttons">
             <button id="register" type="button" class="btn btn-primary" 
               @click="popupConfirm">
@@ -152,9 +162,9 @@
       methods:{
         logoutClicked(){
           auth.signOut();
-          localStorage.setItem("isLoggedIn", false);
-          console.log(localStorage.getItem("isLoggedIn"))
-          localStorage.setItem("userType", null);
+          sessionStorage.setItem("isLoggedIn", false);
+          console.log(sessionStorage.getItem("isLoggedIn"))
+          sessionStorage.setItem("userType", null);
           console.log(this.currentUser);
         }
       },

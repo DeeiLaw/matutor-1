@@ -173,9 +173,9 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     methods:{
       logoutClicked(){
         auth.signOut();
-        localStorage.setItem("isLoggedIn", false);
-        console.log(localStorage.getItem("isLoggedIn"))
-        localStorage.setItem("userType", null);
+        sessionStorage.setItem("isLoggedIn", false);
+        console.log(sessionStorage.getItem("isLoggedIn"))
+        sessionStorage.setItem("userType", null);
         console.log(this.currentUser);
       }
     },
