@@ -6,7 +6,7 @@
         <div class="col-lg-2">
         <!--side nav-->
         <aside>
-          <p> {TC Account Name} </p>
+          <p>{{ currentUser }}</p>
           <router-link to="/dashboard" class="activeBtn">
             <i class="bi bi-speedometer"></i>
             Dashboard
@@ -47,7 +47,7 @@
           <tr>
             <th>Full Name</th>
             <th>Email</th>
-            <th>Age</th>
+            <th>Birthdate</th>
             <th>Contact #</th>
             <th>Interests</th>
             <th>Rating</th>
@@ -134,7 +134,7 @@
   import { auth } from '../../firebase';
   import { db } from '../../firebase';
   import router from '../../router';
-  import { doc, setDoc, getDoc } from "firebase/firestore";
+  import { doc, setDoc, getDoc, arrayUnion } from "firebase/firestore";
   import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence, onAuthStateChanged  } from "firebase/auth";
   import { collection, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
   import { getStorage, getDownloadURL } from "firebase/storage";
@@ -202,6 +202,12 @@
               userUid: crypto.randomUUID(),
               userAbout: '',
             });
+
+            await updateDoc(doc(db, "all_users", "tutor_center", "users", this.currentUser), {
+              tutors: arrayUnion(this.userEmail)
+            });
+
+
             this.loadTable();
           } catch (error) {
             alert(`Error approving registration: ` + error.message);
@@ -224,7 +230,7 @@
             // https://firebase.google.com/docs/reference/js/auth.user
             // ...
             // this.currentUser = user;
-            console.log(user.email);
+            // console.log(user.email);
             this.currentUser = user.email;
             
           } else {
@@ -238,9 +244,9 @@
 
         const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
         querySnapshot.forEach((doc) => {
-          if(doc.data().userTutoringCenter === this.currentUser)
+          if(doc.data().userTutoringCenter === this.currentUser) {
             this.tutorList.push(doc.data());
-          console.log(this.tutorList)
+          }
         });
       }
     };

@@ -176,13 +176,16 @@ import { collection, getDocs, doc, updateDoc, getDocFromCache, getDoc} from "fir
             sessionStorage.setItem("userType", null);
             console.log(this.currentUser);
           }
-        });
+      });
+
+      let noOfTutors = 0;
 
       const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
         querySnapshot.forEach((doc) => {
-          if(doc.data().userTutoringCenter === this.currentUser)
+          if(doc.data().userTutoringCenter === this.currentUser){
             this.tutorList.push(doc.data());
-          console.log(this.tutorList)
+            noOfTutors++;
+          }
         });
     }
   };
