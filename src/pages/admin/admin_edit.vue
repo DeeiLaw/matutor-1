@@ -47,7 +47,7 @@
         <div class="col-lg-2">
         <!--side nav-->
         <aside>
-          <p>{ Admin Account }</p>
+          <p> Admin </p>
           <router-link to="/admin/dashboard" class="activeBtn">
             <i class="bi bi-speedometer"></i>
             Dashboard

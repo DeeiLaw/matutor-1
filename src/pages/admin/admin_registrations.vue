@@ -183,6 +183,22 @@ export default {
           businessPermitURL: tc.businessPermitURL,
         });
 
+        // this block creates an auth meaning it makes the actual account!!
+        // this should only execute once the admin has approved the register
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, tc.email, tc.password)
+
+        .then(async (userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(error.message);
+        });
+        
+        //delete doc for pending
         await deleteDoc(doc(db, "pending_register", "users", "tutor_center", tc.email));
 
         const response = await axios.post('https://sendemail-lxr2rd7qeq-as.a.run.app/sendEmail', emailData);

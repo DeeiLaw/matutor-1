@@ -183,7 +183,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
   aside button[disabled] {
     font-size: 12px;
-    color: #fff;
+    color: #334dbe;
     display: block;
     padding: 12px;
     padding-left: 30px;
@@ -193,7 +193,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     -webkit-tap-highlight-color:transparent;
     border: 0;
     text-decoration: none;
-    background:   #334dbe;
+    background:#ffdd02;
     width: 100%;
     text-align: left;
     transition: 0.2s ease;

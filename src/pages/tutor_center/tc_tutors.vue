@@ -1,5 +1,5 @@
 <template>
-  <div class="text-bg-dark" style="height: 100vh;">
+  <div class="bg-light" style="height: 100vh;">
 
     <div class="container-fluid" style="position: relative;">
       <div class="row">
@@ -45,29 +45,31 @@
         <table class="table table-responsive bg-light">
           <thead>
           <tr>
-            <th>User Type</th>
-            <th>Email</th>
             <th>Full Name</th>
+            <th>Email</th>
             <th>Age</th>
-            <th>BirthDate</th>
             <th>Contact #</th>
+            <th>Interests</th>
             <th>Rating</th>
-            <th>Remove</th>
+            <!-- <th>Remove</th> -->
           </tr>
           </thead>
           <tbody>
             <tr v-for="learner of tutorList">
-              <td>{{ learner.userType }}</td>
-              <td>{{ learner.userEmail }}</td>
               <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
-              <td>{{ learner.userAge }}</td>
+              <td>{{ learner.userEmail }}</td>
               <td>{{ learner.userBdate }}</td>
               <td>{{ learner.userContact }}</td>
-              <td>{{ learner.userRating }}</td>
               <td>
+                <span class="badge text-bg-dark" v-for="tag in learner.userTag">
+                  {{ tag }}
+                </span><br>
+              </td>
+              <td>{{ learner.userRating }}</td>
+              <!-- <td>
                 <i class="bi bi-x-circle-fill text-danger buttonIcon"
                 @click="remove()"></i>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
@@ -80,7 +82,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
-            Add a Tutor
+            Add a Tutor to {{ currentUser }}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -97,11 +99,11 @@
             v-model="userAddress">
           <input class="modal-input" placeholder="Contact #"
             v-model="userContact">
+          
           <input class="modal-input" placeholder="Password"
             v-model="userPassword">
           <input class="modal-input" placeholder="Confirm Password"
             v-model="userPassword">
-
           <label>Tutor's Valid ID</label>
           <input class="modal-input" type="file" name="myImage" 
             ref="fileInput" accept="image/png, image/gif, image/jpeg"
@@ -113,7 +115,7 @@
             @change="handleFileChange()"/>
           <div class="modal-buttons">
             <button id="register" type="button" class="btn btn-primary" 
-              @click="popupConfirm">
+            data-bs-dismiss="modal" @click="modalConfirm">
             Confirm
             </button>
             <button id="cancel" type="button" class="btn btn-danger" data-bs-dismiss="modal"
@@ -131,12 +133,22 @@
   import { ref } from 'vue';
   import { auth } from '../../firebase';
   import { db } from '../../firebase';
-  import { collection, getDocs, doc, updateDoc } from "firebase/firestore"; 
+  import router from '../../router';
+  import { doc, setDoc, getDoc } from "firebase/firestore";
+  import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence, onAuthStateChanged  } from "firebase/auth";
+  import { collection, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
+  import { getStorage, getDownloadURL } from "firebase/storage";
+  import { ref as storageRef } from "firebase/storage";
+  import * as bootstrap from 'bootstrap';
+  import axios from 'axios';
+
     export default{
       data(){
         return {
           currentUser: '',
           tutorList: [],
+          tags: [],
+
           //Tutor info
           userEmail: '',
           userFirstname: '',
@@ -166,16 +178,68 @@
           console.log(sessionStorage.getItem("isLoggedIn"))
           sessionStorage.setItem("userType", null);
           console.log(this.currentUser);
+        },
+        async modalConfirm(){
+          try {
+            alert("Registration sent!");
+            await setDoc(doc(db, "all_users", "tutor", "users", this.userEmail), {
+              userEmail: this.userEmail,
+              userFirstname: this.userFirstname,
+              userLastname: this.userLastname,
+              userAddress: this.userAddress,
+              userPassword:  this.userPassword,
+              userBdate: this.userBdate,
+              userContact: this.userContact,
+
+              userAge: '',
+              userRating: '0',
+              userSessionPrice: '0',
+              userTag: [
+
+              ],
+              userTutoringCenter: this.currentUser,
+              userType: 'tutor',
+              userUid: crypto.randomUUID(),
+              userAbout: '',
+            });
+            this.loadTable();
+          } catch (error) {
+            alert(`Error approving registration: ` + error.message);
+          }
+        },
+        async loadTable(){
+          const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
+          querySnapshot.forEach((doc) => {
+            if(doc.data().userTutoringCenter === this.currentUser)
+              this.tutorList.push(doc.data());
+            console.log(this.tutorList)
+          });
         }
       },
       async created(){
-        const user = ref(null);
-        user.value = auth.currentUser;
-        this.currentUser = user.value;  
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/auth.user
+            // ...
+            // this.currentUser = user;
+            console.log(user.email);
+            this.currentUser = user.email;
+            
+          } else {
+            auth.signOut();
+            sessionStorage.setItem("isLoggedIn", false);
+            console.log(sessionStorage.getItem("isLoggedIn"))
+            sessionStorage.setItem("userType", null);
+            console.log(this.currentUser);
+          }
+        });
 
         const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
         querySnapshot.forEach((doc) => {
-          this.tutorList.push(doc.data());
+          if(doc.data().userTutoringCenter === this.currentUser)
+            this.tutorList.push(doc.data());
           console.log(this.tutorList)
         });
       }
@@ -265,7 +329,7 @@
 
   aside button[disabled] {
     font-size: 12px;
-    color: #fff;
+    color: #334dbe;
     display: block;
     padding: 12px;
     padding-left: 30px;
@@ -275,7 +339,7 @@
     -webkit-tap-highlight-color:transparent;
     border: 0;
     text-decoration: none;
-    background:   #334dbe;
+    background:#ffdd02;
     width: 100%;
     text-align: left;
     transition: 0.2s ease;

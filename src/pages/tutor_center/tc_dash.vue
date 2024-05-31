@@ -1,53 +1,11 @@
 <template>
-  <!-- Pop up edit field-->
-  <transition name="fade">
-    <div class="editField bg-light" style="width: 650px;" v-show="showEdit">
-      <h1>{{ editEmail }}</h1>
-      <div class="txtContainer col-md-12 row ">
-        <!-- <div class="col-md-12">
-          <input type="text" placeholder="Email" 
-          v-model="editEmail">
-        </div> -->
-        <div class="col-md-6">
-          <input type="text" placeholder="Firstname" 
-          v-model="editFirstname">
-        </div>
-        <div class="col-md-6 ">
-          <input type="text" placeholder="Lastname"
-          v-model="editLastname">
-        </div>
-        <div class="col-md-12">
-          <input type="text" placeholder="Birthdate"
-          v-model="editBdate">
-          <input type="text" placeholder="Address"
-          v-model="editAddress">
-          <input type="text" placeholder="Contact #"
-          v-model="editContact">
-        </div>
-      </div>
-      <button type="button" class="btn btn-primary" 
-      @click="popupConfirm">
-        Confirm
-      </button>
-      <button type="button" class="btn btn-danger" 
-      @click="popupCancel">
-        Cancel
-      </button>
-    </div>
-  </transition>
-  <div class="dark" style="height: 100vh;" v-show="showEdit">
-    <!-- BG of Pop up edit field-->  
-  </div>
-  <!-- end of Pop up edit field-->
-  
-  <div class="text-bg-dark" style="height: 100vh;" v-show="!showEdit">
-
+  <div class="text-bg-light">
     <div class="container-fluid" style="position: relative;">
       <div class="row">
         <div class="col-lg-2">
         <!--side nav-->
         <aside>
-          <p> {TC Account name} </p>
+          <p> {{currentUser}} </p>
           <button id="current" type="button" disabled>
             <i class="bi bi-speedometer"></i>
             Dashboard
@@ -74,43 +32,59 @@
       </div>
       
       <div class="col-lg-10 pt-5">
-        <h4>Tutor Center Dashboard</h4>
+        <div class="reviewDiv col-md-12 row d-flex">
+          <div class="reviewAverage col-md-2 d-flex bg-primary">
+            <div>
+              <h4 class="text-white" style="font-size: 1.3rem;">Your Avg. Rating</h4>
+              <h1 class="text-white" style="font-size: 6.0rem;">4.5</h1>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-half"></i>
+              <i class="bi bi-star"></i>
+            </div>
+          </div>
 
-        <h5>Your Tutors' Recent Reviews(Max 10)</h5>
-        <table class="table table-responsive bg-light">
-          <thead>
-            <tr>
-              <th>Rating</th>
-              <th>Tutor Name</th>
-              <th>Reviewed by</th>
-              <th>Review description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="rating">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-half"></i>
-                  <i class="bi bi-star"></i>
-              </td>
-              <td>Tutor's Name</td>
-              <td>Learner's Name</td>
-              <td>
-                  Lorem Ipsum Dolor sit amet. The Quick brown fox jumps over the lazy dog
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <div class="col-md-9 d-flex ">
+            <div>
+               <h5>Recent Reviews</h5>
+              <table class="tableRating table table-responsive bg-light">
+                <thead>
+                  <tr>
+                    <th>Rating</th>
+                    <th>Tutor Name</th>
+                    <th>Reviewed by</th>
+                    <th>Review description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="rating">
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star-fill"></i>
+                      <i class="bi bi-star-half"></i>
+                      <i class="bi bi-star"></i>
+                    </td>
+                    <td>Tutor's Name</td>
+                    <td>Learner's Name</td>
+                    <td>
+                        Lorem Ipsum Dolor sit amet. The Quick brown fox jumps over the lazy dog
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         
-        <h5>Your Tutors (Max 10 Sort by rating)</h5>
+        <h5 style="padding-top: 2%;">Your Tutors</h5>
         <table class="table table-responsive bg-light">
           <thead>
           <tr>
             <th>Full Name</th>
             <th>Email</th>
-            <th>Age</th>
+            <th>Interests</th>
             <th>Contact #</th>
             <th>Rating</th>
           </tr>
@@ -119,12 +93,19 @@
             <tr v-for="learner of tutorList">
               <td>{{ learner.userFirstname + ' ' + learner.userLastname }}</td>
               <td>{{ learner.userEmail }}</td>
-              <td>{{ learner.userAge }}</td>
+              <td>
+                <span class="badge text-bg-dark" v-for="tag in learner.userTag">
+                  {{ tag }}
+                </span><br>
+               </td>
               <td>{{ learner.userContact }}</td>
               <td>{{ learner.userRating }}</td>
             </tr>
           </tbody>
         </table>
+        <router-link to="/mytutors" class="btn btn-primary">
+          View more
+        </router-link>
       </div>
       </div>
     </div>
@@ -132,10 +113,11 @@
 </template>
 
 <script>
+import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence, onAuthStateChanged  } from "firebase/auth";
 import { ref } from 'vue';
 import { auth } from '../../firebase';
 import { db } from '../../firebase';
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore"; 
+import { collection, getDocs, doc, updateDoc, getDocFromCache, getDoc} from "firebase/firestore"; 
   export default{
     data(){
       return {
@@ -180,15 +162,28 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       }
     },
     async created(){
-      const user = ref(null);
-      user.value = auth.currentUser;
-      this.currentUser = user.value;  
+      const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+
+            console.log(user.email);
+            this.currentUser = user.email;
+            
+          } else {
+            auth.signOut();
+            sessionStorage.setItem("isLoggedIn", false);
+            console.log(sessionStorage.getItem("isLoggedIn"))
+            sessionStorage.setItem("userType", null);
+            console.log(this.currentUser);
+          }
+        });
 
       const querySnapshot = await getDocs(collection(db, "all_users/tutor/users"));
-      querySnapshot.forEach((doc) => {
-        this.tutorList.push(doc.data());
-        console.log(this.tutorList)
-      });
+        querySnapshot.forEach((doc) => {
+          if(doc.data().userTutoringCenter === this.currentUser)
+            this.tutorList.push(doc.data());
+          console.log(this.tutorList)
+        });
     }
   };
 </script>
@@ -276,7 +271,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
   aside button[disabled] {
     font-size: 12px;
-    color: #fff;
+    color: #334dbe;
     display: block;
     padding: 12px;
     padding-left: 30px;
@@ -286,7 +281,7 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
     -webkit-tap-highlight-color:transparent;
     border: 0;
     text-decoration: none;
-    background:   #334dbe;
+    background:#ffdd02;
     width: 100%;
     text-align: left;
     transition: 0.2s ease;
@@ -306,7 +301,22 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   aside .logoutBtn:hover:before {
     box-shadow: 0 -20px 0 0 #ff3045   !important;
   }
+
+  .tableRating {
+    
+  }
+  .reviewAverage{
+    /* width: 40%; */
+    height: 1%;
+    padding: 1%;
+    border-radius: 10px;
+  }
+  .reviewAverage i{
+    color: #f3cf00;
+    font-size: 2rem;
+  }
   td i{
     color: #f3cf00;
   }
+
 </style>

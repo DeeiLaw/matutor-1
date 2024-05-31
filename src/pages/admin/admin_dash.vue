@@ -6,7 +6,7 @@
         <div class="col-lg-2">
           <!--side nav-->
           <aside>
-            <p>{ Admin Account }</p> 
+            <p> Admin </p> 
             <button id="current" type="button" disabled>
               <i class="bi bi-speedometer"></i>
               Dashboard
@@ -35,7 +35,7 @@
           </aside>
           <!--end of side nav-->  
         </div>
-      
+        
         <div class="col-lg-10 pt-5">
           <h4>Admin Dashboard</h4>
           <h5>Pending Registrations</h5>
@@ -169,15 +169,14 @@
 </template>
 
 <script>
-import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence } from "firebase/auth";
+import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence, onAuthStateChanged  } from "firebase/auth";
 import { ref } from 'vue';
-import { auth } from '../../firebase';
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore"; 
   export default{
     data(){
       return {
-        currentUser: '',
+        currentUser: [],
         tcList: [],
         tutorList: [],
       }
@@ -195,12 +194,24 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
       }
     },
     async created(){
-      // const user = ref(null);
-      // user.value = auth.currentUser;
-      // this.currentUser = user.value;
-      // console.log(auth.currentUser);
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/auth.user
+          this.currentUser = user;
+          console.log(this.currentUser);
+          // ...
+        } else {
+          auth.signOut();
+          sessionStorage.setItem("isLoggedIn", false);
+          console.log(sessionStorage.getItem("isLoggedIn"))
+          sessionStorage.setItem("userType", null);
+          console.log(this.currentUser);
+        }
+      });
 
-      
+
       let querySnapshot = await getDocs(collection(db, "/pending_register/users/tutor_center"));
       querySnapshot.forEach((doc) => {
         this.tcList.push(doc.data());
